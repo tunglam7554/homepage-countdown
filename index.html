@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>New tab</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body class="animated-gradient">
+        <div id="countdown">
+            <div>
+                <div class="flip-container" id="hoursFlip">
+                    <div class="flip">
+                        <div class="front">
+                            <span class="hours"></span>
+                        </div>
+                        <div class="back">
+                            <span class="hours"></span>
+                        </div>
+                    </div>
+                </div>
+                <span class="label">Hours</span>
+            </div>
+            <div>
+                <div class="flip-container" id="minutesFlip">
+                    <div class="flip">
+                        <div class="front">
+                            <span class="minutes"></span>
+                        </div>
+                        <div class="back">
+                            <span class="minutes"></span>
+                        </div>
+                    </div>
+                </div>
+                <span class="label">Minutes</span>
+            </div>
+            <div>
+                <div class="flip-container" id="secondsFlip">
+                    <div class="flip">
+                        <div class="front">
+                            <span class="seconds"></span>
+                        </div>
+                        <div class="back">
+                            <span class="seconds"></span>
+                        </div>
+                    </div>
+                </div>
+                <span class="label">Seconds</span>
+            </div>
+        </div>
+        <form
+            class="search-form"
+            action="https://google.com/search"
+            method="get"
+        >
+            <input class="search-input" placeholder="Search..." name="q" />
+        </form>
+        <div class="web-grid">
+            <a
+                href="https://tulavideo.web.app"
+                class="web-item"
+                target="_blank"
+            >
+                <img src="./assets/tulavideo.png" />
+                <span>TulaVideo</span>
+            </a>
+            <a
+                href="https://tulamusic.web.app"
+                class="web-item"
+                target="_blank"
+            >
+                <img src="./assets/tulamusic.png" />
+                <span>TulaMusic</span>
+            </a>
+            <a
+                href="https://tulavideo.web.app/toptop"
+                class="web-item"
+                target="_blank"
+            >
+                <img src="./assets/tik-tok.png" />
+                <span>TopTop</span>
+            </a>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
