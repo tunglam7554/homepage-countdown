@@ -1,18 +1,32 @@
+const dev = false;
+getWallpaper();
 // Set the target date and time
 const targetDate = new Date();
-targetDate.setHours(17);
-targetDate.setMinutes(15);
-targetDate.setSeconds(0);
-targetDate.setMilliseconds(0);
+if (dev == true) {
+    targetDate.setHours(24);
+    targetDate.setMinutes(0);
+    targetDate.setSeconds(0);
+    targetDate.setMilliseconds(0);
+} else {
+    targetDate.setHours(17);
+    targetDate.setMinutes(15);
+    targetDate.setSeconds(0);
+    targetDate.setMilliseconds(0);
+}
+
+var day = targetDate.getDay();
+day = day < 10 ? "0" + day : day;
+const year = targetDate.getFullYear();
+
+document.getElementById("month").innerHTML =
+    day + " " + targetDate.toLocaleString("default", { month: "long" });
+document.getElementById("year").innerHTML = year;
+
 // Update the countdown every 1 second
 const countdown = setInterval(() => {
-    // Get the current date and time
     const now = new Date().getTime();
 
-    // Calculate the time remaining
     const timeRemaining = targetDate - now;
-
-    // Calculate the days, hours, minutes, and seconds
     const hours = Math.floor(
         (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
@@ -58,31 +72,43 @@ const countdown = setInterval(() => {
         flipContainers.classList.toggle("flipped");
     }
 
-    // If the countdown is finished, clear the interval
     if (timeRemaining < 0) {
-        clearInterval(countdown);
-        document.getElementById("countdown").innerHTML = "Go home!";
         notifyMe();
+        clearInterval(countdown);
     }
 }, 1000);
 
 function notifyMe() {
+    document.getElementById("notify").classList.remove('hide');
+    document.getElementById("countdown").classList.add('hide');
+
     if (!("Notification" in window)) {
-        // Check if the browser supports notifications
         alert("This browser does not support desktop notification");
     } else if (Notification.permission === "granted") {
-        // Check whether notification permissions have already been granted;
-        // if so, create a notification
         const notification = new Notification("Go home!");
-        // …
     } else if (Notification.permission !== "denied") {
-        // We need to ask the user for permission
         Notification.requestPermission().then((permission) => {
-            // If the user accepts, let's create a notification
             if (permission === "granted") {
                 const notification = new Notification("Go home!");
-                // …
             }
         });
     }
+}
+
+function getWallpaper() {
+    var api =
+        "https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-US";
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(xhttp.responseText);
+            console.log(response);
+            document.getElementById("body").style.backgroundImage =
+                "url(" + response.url + ")";
+        }
+    };
+    xhttp.open("GET", api);
+    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhttp.send();
 }

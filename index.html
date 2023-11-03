@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>New tab</title>
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body class="animated-gradient">
-        <div id="countdown">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New tab</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body id="body">
+    <div class="container">
+        <div id="countdown" class="countdown">
             <div>
                 <div class="flip-container" id="hoursFlip">
                     <div class="flip">
@@ -48,40 +51,39 @@
                 </div>
                 <span class="label">Seconds</span>
             </div>
+            <div class="date">
+                <span id="month"></span>
+                <span id="year"></span>
+            </div>
         </div>
-        <form
-            class="search-form"
-            action="https://google.com/search"
-            method="get"
-        >
-            <input class="search-input" placeholder="Search..." name="q" />
+        <div id="notify" class="notify hide">
+            <p>Go home!</p>
+        </div>
+        <form class="search-form" action="https://google.com/search" method="get">
+            <input class="search-input" placeholder="Search anything..." name="q" />
         </form>
         <div class="web-grid">
-            <a
-                href="https://tulavideo.web.app"
-                class="web-item"
-                target="_blank"
-            >
-                <img src="./assets/tulavideo.png" />
+            <a href="https://tulavideo.web.app" class="web-item" target="_blank">
+                <div class="web-item-bg">
+                    <img src="./assets/tulavideo.png" />
+                </div>
                 <span>TulaVideo</span>
             </a>
-            <a
-                href="https://tulamusic.web.app"
-                class="web-item"
-                target="_blank"
-            >
-                <img src="./assets/tulamusic.png" />
+            <a href="https://tulamusic.web.app" class="web-item" target="_blank">
+                <div class="web-item-bg">
+                    <img src="./assets/tulamusic.png" />
+                </div>
                 <span>TulaMusic</span>
             </a>
-            <a
-                href="https://tulavideo.web.app/toptop"
-                class="web-item"
-                target="_blank"
-            >
-                <img src="./assets/tik-tok.png" />
+            <a href="https://tulavideo.web.app/toptop" class="web-item" target="_blank">
+                <div class="web-item-bg">
+                    <img src="./assets/tik-tok.png" />
+                </div>
                 <span>TopTop</span>
             </a>
         </div>
-        <script src="script.js"></script>
-    </body>
+    </div>
+    <script src="script.js"></script>
+</body>
+
 </html>
