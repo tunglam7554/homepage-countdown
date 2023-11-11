@@ -32,7 +32,7 @@ function NotifyMe() {
 function GetWallpaper() {
     var wallpaper = JSON.parse(localStorage.getItem('wallpaper'));
     var url = wallpaper?.url;
-    var updatedAt = wallpaper?.updatedAt;
+    var updatedAt = new Date(wallpaper?.updatedAt);
     const today = new Date();
     today.setHours(7, 0, 0, 0);
     if (!wallpaper || !url || !updatedAt || updatedAt < today) {

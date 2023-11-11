@@ -228,8 +228,25 @@ body {
 
 #btn-setting {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border-radius: 10px;
+    padding: 5px;
+    color: var(--white);
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#btn-setting:hover {
+    background-color: var(--button-hover);
+}
+
+#btn-setting svg {
+    fill: var(--white);
 }
 
 .popup {
