@@ -2,6 +2,7 @@ var dev;
 var isCountdown;
 var coundown;
 var targetDate;
+var setting_selected_countdown;
 GetWallpaper();
 LoadDate();
 AddEventListener();
@@ -73,27 +74,28 @@ function AddEventListener() {
     });
 
     var clock_type_time = document.getElementById('clock_type:time');
-    clock_type_time.addEventListener('change', function () {
-        if (clock_type_time.checked == true) {
-            document.getElementById('time-picker').classList.add('hide');
-        }
-        else {
-            document.getElementById('time-picker').classList.remove('hide');
-        }
+    clock_type_time.addEventListener('click', function () {
+        setting_selected_countdown = false;
+        document.getElementById('time-picker').disabled = true;
+        document.getElementById('clock_type:countdown').classList.remove("selected");
+        document.getElementById('clock_type:time').classList.add("selected");
     });
     var clock_type_countdown = document.getElementById('clock_type:countdown');
-    clock_type_countdown.addEventListener('change', function () {
-        if (clock_type_countdown.checked == true) {
-            document.getElementById('time-picker').classList.remove('hide');
-        }
-        else {
-            document.getElementById('time-picker').classList.add('hide');
-        }
+    clock_type_countdown.addEventListener('click', function () {
+        setting_selected_countdown = true;
+        document.getElementById('time-picker').disabled = false;
+        document.getElementById('clock_type:countdown').classList.add("selected");
+        document.getElementById('clock_type:time').classList.remove("selected");
     });
 
     document.getElementById('btn-save').addEventListener('click', function () {
-        if (clock_type_countdown.checked == true) {
-            var value = document.getElementById('input-time').value;
+        if (setting_selected_countdown == true) {
+            var value = document.getElementById('time-picker').value;
+            if (value == null || value == "") {
+                alert("You must set time for timer!");
+                return;
+            }
+
             localStorage.setItem('timer', value);
             localStorage.setItem('isCountdown', true);
             clearInterval(countdown);
@@ -117,9 +119,11 @@ function AddEventListener() {
 function LoadSetting() {
     dev = JSON.parse(localStorage.getItem('dev'));
     isCountdown = JSON.parse(localStorage.getItem('isCountdown'));
+    setting_selected_countdown = isCountdown;
     if (isCountdown) {
-        document.getElementById('clock_type:countdown').checked = true;
-        document.getElementById('time-picker').classList.remove('hide');
+        document.getElementById('time-picker').disabled = false;
+        document.getElementById('clock_type:countdown').classList.add("selected");
+        document.getElementById('clock_type:time').classList.remove("selected");
         const timer = localStorage.getItem('timer');
         targetDate = new Date()
         if (dev == true) {
@@ -140,10 +144,11 @@ function LoadSetting() {
                 targetDate.setMilliseconds(0);
             }
         }
-        document.getElementById('input-time').value = timer;
+        document.getElementById('time-picker').value = timer;
     } else {
-        document.getElementById('time-picker').classList.add('hide');
-        document.getElementById('clock_type:time').checked = true;
+        document.getElementById('time-picker').disabled = true;
+        document.getElementById('clock_type:countdown').classList.remove("selected");
+        document.getElementById('clock_type:time').classList.add("selected");
     }
 }
 
@@ -159,8 +164,10 @@ function LoadDate() {
 }
 
 function SetCountdown() {
+    document.getElementById("notify").classList.add('hide');
+    document.getElementById("countdown").classList.remove('hide');
     countdown = setInterval(() => {
-        const now = new Date().getTime();
+        const now = new Date();
         const timeRemaining = targetDate - now;
         const hours = Math.floor(
             (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -214,6 +221,8 @@ function SetCountdown() {
 }
 
 function SetClock() {
+    document.getElementById("notify").classList.add('hide');
+    document.getElementById("countdown").classList.remove('hide');
     countdown = setInterval(() => {
         const now = new Date();
         const hours = now.getHours();
