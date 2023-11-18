@@ -122,11 +122,12 @@ function LoadSetting() {
     dev = JSON.parse(localStorage.getItem('dev'));
     isCountdown = JSON.parse(localStorage.getItem('isCountdown'));
     setting_selected_countdown = isCountdown;
+    const timer = localStorage.getItem('timer');
+    document.getElementById('time-picker').value = timer;
     if (isCountdown) {
         document.getElementById('time-picker').disabled = false;
         document.getElementById('clock_type:countdown').classList.add("selected");
         document.getElementById('clock_type:time').classList.remove("selected");
-        const timer = localStorage.getItem('timer');
         targetDate = new Date()
         if (dev == true) {
             targetDate.setHours(24);
@@ -146,7 +147,6 @@ function LoadSetting() {
                 targetDate.setMilliseconds(0);
             }
         }
-        document.getElementById('time-picker').value = timer;
     } else {
         document.getElementById('time-picker').disabled = true;
         document.getElementById('clock_type:countdown').classList.remove("selected");
