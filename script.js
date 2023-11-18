@@ -59,11 +59,6 @@ function GetWallpaper() {
     }
 }
 
-function openSetting() {
-    var overlay = document.getElementById('overlay');
-    overlay.classList.toggle('hide');
-}
-
 function AddEventListener() {
     var overlay = document.getElementById('overlay');
     var popup = document.getElementById('popup');
@@ -77,7 +72,9 @@ function AddEventListener() {
     popup.addEventListener('click', function (e) {
         e.stopPropagation();
     });
-
+    document.getElementById('setting-shortcut').addEventListener('click', function () {
+        overlay.classList.toggle('hide');
+    });
     var clock_type_time = document.getElementById('clock_type:time');
     clock_type_time.addEventListener('click', function () {
         setting_selected_countdown = false;
