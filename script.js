@@ -59,6 +59,11 @@ function GetWallpaper() {
     }
 }
 
+function openSetting() {
+    var overlay = document.getElementById('overlay');
+    overlay.classList.toggle('hide');
+}
+
 function AddEventListener() {
     var overlay = document.getElementById('overlay');
     var popup = document.getElementById('popup');

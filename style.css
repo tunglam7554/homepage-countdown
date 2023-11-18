@@ -214,6 +214,7 @@ body {
     align-items: center;
     color: var(--white);
     text-decoration: none;
+    cursor: pointer;
 }
 
 .web-item .web-item-bg {
