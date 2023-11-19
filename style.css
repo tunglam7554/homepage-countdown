@@ -4,7 +4,8 @@
     --black: #000;
     --white: #fff;
     --overlay: rgba(0, 0, 0, 0.5);
-    --accent: rgb(15, 104, 235);
+    --accent: #33cccc;
+    --accent-hover: #4cdfdf;
     --secondary: #d6d6d6;
 }
 
@@ -322,6 +323,11 @@ body {
     border: 2px solid var(--accent);
 }
 
+
+.btn-clocktype.selected span {
+    color: var(--accent);
+}
+
 .btn-clocktype img {
     height: 80px;
     width: 80px;
@@ -365,7 +371,7 @@ body {
 }
 
 #btn-save:hover {
-    background-color: rgb(34, 116, 238);
+    background-color: var(--accent-hover);
 }
 
 #btn-cancel {

@@ -1,10 +1,13 @@
 {
-    "name": "Go home count down",
+    "name": "New Tab Page with Countdown",
     "description": "Go home count down in new tab page",
-    "version": "0.1",
+    "version": "1.0",
     "incognito": "split",
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
+    "permissons": [
+        "notifications"
+    ],
     "manifest_version": 3
 }
