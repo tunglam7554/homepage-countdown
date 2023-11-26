@@ -199,7 +199,7 @@ body {
 
 #btn-search {
     position: absolute;
-    top: 9px;
+    top: 7px;
     left: 25px;
     background-color: transparent;
 }
@@ -219,9 +219,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.web-item a {
     color: var(--white);
     text-decoration: none;
-    cursor: pointer;
 }
 
 .web-item .web-item-bg {
@@ -246,8 +250,24 @@ body {
     width: 48px;
 }
 
-.web-item>span {
+.web-item span {
     margin-top: 4px;
+}
+
+.web-item:hover .btn-edit {
+    display: flex;
+}
+
+.btn-edit {
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    background-color: var(--white);
+    border-radius: 50%;
+    padding: 3px;
+    justify-content: center;
+    align-items: center;
+    display: none;
 }
 
 #btn-setting {

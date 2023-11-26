@@ -1,20 +1,46 @@
-var dev;
-var isCountdown;
-var coundown;
-var targetDate;
-var setting_selected_countdown;
-LoadWallpaper();
-LoadDate();
-AddEventListener();
-LoadSetting();
-if (isCountdown) {
-    SetCountdown();
-} else {
-    SetClock();
+const wallpaperAPI = "https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-US";
+let dev, isCountdown, coundown, targetDate, isSelectedCountdown;
+const elements = {
+    body: document.getElementById("body"),
+    updateTime: document.getElementById("update-time"),
+    timePicker: document.getElementById("time-picker"),
+    countdownType: {
+        countdown: document.getElementById("clock_type:countdown"),
+        time: document.getElementById("clock_type:time"),
+    },
+    webGrid: document.getElementById("web-grid"),
+    shortcutName: document.getElementById("shortcut-name"),
+    shortcutUrl: document.getElementById("shortcut-url"),
 }
-LoadShortCut();
+const defaultShortcut = [
+    {
+        icon: "./assets/tulavideo.png",
+        name: "TulaVideo",
+        url: "https://tulavideo.web.app",
+    },
+    {
+        icon: "./assets/tulamusic.png",
+        name: "TulaMusic",
+        url: "https://tulamusic.web.app",
+    },
+    {
+        icon: "./assets/tik-tok.png",
+        name: "TopTop",
+        url: "https://tulavideo.web.app/toptop"
+    }
+]
+initialize();
 
-function NotifyMe() {
+function initialize() {
+    loadWallpaper();
+    loadDate();
+    addEventListener();
+    loadSetting();
+    isCountdown ? setCountdown() : setClock();
+    loadShortcut();
+}
+
+function notifyMe() {
     document.getElementById("notify").classList.remove('hide');
     document.getElementById("countdown").classList.add('hide');
 
@@ -31,105 +57,90 @@ function NotifyMe() {
     }
 }
 
-function LoadWallpaper() {
-    var wallpaper = JSON.parse(localStorage.getItem('wallpaper'));
-    var url = wallpaper?.url;
-    var updatedAt = new Date(wallpaper?.updatedAt);
+async function loadWallpaper() {
+    let wallpaper = JSON.parse(localStorage.getItem('wallpaper')) || {};
+    let { url, updatedAt } = wallpaper;
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (!wallpaper || !url || !updatedAt || updatedAt < today) {
-        var api =
-            "https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-US";
 
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var response = JSON.parse(xhttp.responseText);
-                console.log(response);
-                var updateTime = new Date();
-                document.getElementById("body").style.backgroundImage =
-                    "url(" + response.url + ")";
-                localStorage.setItem('wallpaper', JSON.stringify({ url: response.url, updatedAt: updateTime }));
-                document.getElementById("update-time").innerText = updateTime.toLocaleString();
-            }
-        };
-        xhttp.open("GET", api);
-        xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhttp.send();
-    } else {
-        document.getElementById("body").style.backgroundImage =
-            "url(" + url + ")";
-    }
-}
+    if (!url || !updatedAt || new Date(updatedAt) < today) {
+        try {
+            const response = fetch(wallpaperAPI);
+            const data = await response.json();
 
-function LoadSetting() {
-    dev = JSON.parse(localStorage.getItem('dev'));
-    isCountdown = JSON.parse(localStorage.getItem('isCountdown'));
-    setting_selected_countdown = isCountdown;
-    const timer = localStorage.getItem('timer');
-    var wallpaper = JSON.parse(localStorage.getItem('wallpaper'));
-    if (wallpaper != null && wallpaper.updatedAt != null) {
-        document.getElementById("update-time").innerText = (new Date(wallpaper.updatedAt).toLocaleString());
-    }
-    document.getElementById('time-picker').value = timer;
-    if (isCountdown) {
-        document.getElementById('time-picker').disabled = false;
-        document.getElementById('clock_type:countdown').classList.add("selected");
-        document.getElementById('clock_type:time').classList.remove("selected");
-        targetDate = new Date()
-        if (dev == true) {
-            targetDate.setHours(24);
-            targetDate.setMinutes(0);
-            targetDate.setSeconds(0);
-            targetDate.setMilliseconds(0);
-        } else {
-            if (timer != null) {
-                targetDate = new Date();
-                var timeArray = timer.split(":");
-                targetDate.setHours(timeArray[0]);
-                targetDate.setMinutes(timeArray[1]);
-            } else {
-                targetDate.setHours(17);
-                targetDate.setMinutes(15);
-                targetDate.setSeconds(0);
-                targetDate.setMilliseconds(0);
-            }
+            elements.body.style.backgroundImage = `url(${data.url})`;
+
+            let updateTime = new Date();
+            localStorage.setItem('wallpaper', JSON.stringify({ url: data.url, updatedAt: updateTime }));
+            elements.updateTime.innerText = updateTime.toLocaleString();
+        } catch (error) {
+            console.error(error);
+            return;
         }
     } else {
-        document.getElementById('time-picker').disabled = true;
-        document.getElementById('clock_type:countdown').classList.remove("selected");
-        document.getElementById('clock_type:time').classList.add("selected");
+        elements.body.style.backgroundImage = `url(${url})`;
     }
 }
 
-function LoadShortCut() {
-    var listShortCut = `<a href="https://tulavideo.web.app" class="web-item" target="_blank">
-            <div class="web-item-bg">
-                <img src="./assets/tulavideo.png" />
-            </div>
-            <span>TulaVideo</span>
-        </a>
-        <a href="https://tulamusic.web.app" class="web-item" target="_blank">
-            <div class="web-item-bg">
-                <img src="./assets/tulamusic.png" />
-            </div>
-            <span>TulaMusic</span>
-        </a>
-        <a href="https://tulavideo.web.app/toptop" class="web-item" target="_blank">
-            <div class="web-item-bg">
-                <img src="./assets/tik-tok.png" />
-            </div>
-            <span>TopTop</span>
-        </a>`;
+function loadSetting() {
+    //load time update wallpaper
+    const wallpaper = JSON.parse(localStorage.getItem('wallpaper')) || {};
+    const { updatedAt } = wallpaper;
+    if (updatedAt) {
+        elements.updateTime.innerText = (new Date(wallpaper.updatedAt).toLocaleString());
+    }
+    //load timer
+    const timer = localStorage.getItem('timer');
+    elements.timePicker.value = timer;
+    //load clock type
+    isCountdown = JSON.parse(localStorage.getItem('isCountdown')) || false;
+    isSelectedCountdown = isCountdown;
 
-    var shortCut = JSON.parse(localStorage.getItem('shortcut'));
-    shortCut?.map(item => {
-        listShortCut += `<a href="${item.url}" class="web-item" target="_blank">
+    if (isCountdown) {
+        elements.timePicker.disabled = false;
+        elements.countdownType.countdown.classList.add("selected");
+        elements.countdownType.time.classList.remove("selected");
+
+        targetDate = calculateTargetDate(timer);
+    } else {
+        elements.timePicker.disabled = true;
+        elements.countdownType.countdown.classList.remove("selected");
+        elements.countdownType.time.classList.add("selected");
+    }
+}
+
+function calculateTargetDate(timer) {
+    const targetDate = new Date()
+    dev = JSON.parse(localStorage.getItem('dev'));
+    if (dev == true) {
+        targetDate.setHours(24, 0, 0, 0);
+    } else if (timer) {
+        let timeArray = timer.split(":");
+        targetDate.setHours(timeArray[0], timeArray[1], 0, 0);
+    } else {
+        targetDate.setHours(17, 15, 0, 0);
+    }
+    return targetDate;
+}
+
+function loadShortcut() {
+    let listShortCut = "";
+    let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
+    let shortCut = [...defaultShortcut, ...localShortCut];
+
+    shortCut.forEach(item => {
+        listShortCut += `<div class="web-item"><a href="${item.url}"target="_blank">
                 <div class="web-item-bg">
                     <img src="${item.icon}" />
                 </div>
-                <span>${item.name}</span>
-            </a>`;
+                <span>${item.name}</span>          
+            </a>
+            <div class="btn-edit" data-bs-toggle="modal" data-bs-target="#popup-edit" data-bs-name="${item.name}" data-bs-url="${item.url}">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 24 24">
+                    <path d="M 18.414062 2 C 18.158062 2 17.902031 2.0979687 17.707031 2.2929688 L 15.707031 4.2929688 L 14.292969 5.7070312 L 3 17 L 3 21 L 7 21 L 21.707031 6.2929688 C 22.098031 5.9019687 22.098031 5.2689063 21.707031 4.8789062 L 19.121094 2.2929688 C 18.926094 2.0979687 18.670063 2 18.414062 2 z M 18.414062 4.4140625 L 19.585938 5.5859375 L 18.292969 6.8789062 L 17.121094 5.7070312 L 18.414062 4.4140625 z M 15.707031 7.1210938 L 16.878906 8.2929688 L 6.171875 19 L 5 19 L 5 17.828125 L 15.707031 7.1210938 z"></path>
+                </svg>
+            </div></div>`;
     });
 
     listShortCut += `<div class="web-item" data-bs-toggle="modal" data-bs-target="#popup-add">
@@ -137,96 +148,174 @@ function LoadShortCut() {
             <img src="./assets/add.png" style="height: 24px;width: 24px;" />
         </div>
     </div>`;
-    document.getElementById('web-grid').innerHTML = listShortCut;
+
+    elements.webGrid.innerHTML = listShortCut;
 
     document.getElementById('btn-add').addEventListener('click', function () {
-        var name = document.getElementById('shortcut-name').value;
-        var url = document.getElementById('shortcut-url').value;
-        if (name != null && name != "" && url != null && url != "") {
-            var newShortCut = {
-                url: "https://" + url,
+        const name = elements.shortcutName.value;
+        const url = elements.shortcutUrl.value;
+        if (name && url) {
+            const newShortCut = {
+                url: `https://${url}`,
                 name: name,
                 icon: `https://www.google.com/s2/favicons?domain=${url}&sz=48`
-            }
-            var listShortCut = JSON.parse(localStorage.getItem('shortcut'));
-            if (listShortCut != null) {
-                if (listShortCut.findIndex(item => item.url == newShortCut.url) == -1) {
-                    listShortCut.push(newShortCut);
-                } else {
-                    alert("This website already added!");
-                    return;
-                }
+            };
+
+            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
+            let listShortCut = [...defaultShortcut, ...localShortCut];
+
+            if (!listShortCut.some(item => item.url == newShortCut.url)) {
+                localShortCut.push(newShortCut);
+                localStorage.setItem('shortcut', JSON.stringify(localShortCut));
+                loadShortcut();
             } else {
-                listShortCut = [newShortCut];
+                alert("This website already added!");
             }
-            localStorage.setItem('shortcut', JSON.stringify(listShortCut));
-            LoadShortCut();
-            document.getElementById('shortcut-name').value = "";
-            document.getElementById('shortcut-url').value = "";
+            elements.shortcutName.value = "";
+            elements.shortcutUrl.value = "";
         }
     });
 }
 
-function AddEventListener() {
+function addEventListener() {
+    //Popup setting
     const modalSetting = document.getElementById('popup-setting');
-    modalSetting.addEventListener('show.bs.modal', LoadSetting);
-
-    document.getElementById('clock_type:time').addEventListener('click', function () {
-        setting_selected_countdown = false;
-        document.getElementById('time-picker').disabled = true;
-        document.getElementById('clock_type:countdown').classList.remove("selected");
-        document.getElementById('clock_type:time').classList.add("selected");
+    modalSetting.addEventListener('show.bs.modal', loadSetting);
+    //Add event select clock setting
+    elements.countdownType.time.addEventListener('click', function () {
+        isSelectedCountdown = false;
+        elements.timePicker.disabled = true;
+        elements.countdownType.countdown.classList.remove("selected");
+        elements.countdownType.time.classList.add("selected");
     });
-
-    document.getElementById('clock_type:countdown').addEventListener('click', function () {
-        setting_selected_countdown = true;
-        document.getElementById('time-picker').disabled = false;
-        document.getElementById('clock_type:countdown').classList.add("selected");
-        document.getElementById('clock_type:time').classList.remove("selected");
+    //Add event select countdown setting
+    elements.countdownType.countdown.addEventListener('click', function () {
+        isSelectedCountdown = true;
+        elements.timePicker.disabled = false;
+        elements.countdownType.countdown.classList.add("selected");
+        elements.countdownType.time.classList.remove("selected");
     });
-
+    //Add event get new wallpaper
     document.getElementById('btn-new-wallpaper').addEventListener('click', function () {
-        localStorage.setItem('wallpaper', null);
-        LoadWallpaper();
+        localStorage.removeItem('wallpaper');
+        loadWallpaper();
     });
-
+    //Add event save setting
     document.getElementById('btn-save').addEventListener('click', function () {
-        if (setting_selected_countdown == true) {
-            var value = document.getElementById('time-picker').value;
-            if (value == null || value == "") {
+        if (isSelectedCountdown) {
+            const timer = elements.timePicker.value;
+            if (!timer) {
                 alert("You must set time for timer!");
                 return;
             }
 
-            localStorage.setItem('timer', value);
+            localStorage.setItem('timer', timer);
             localStorage.setItem('isCountdown', true);
-            clearInterval(countdown);
-            LoadSetting();
-            SetCountdown();
+            cancelAnimationFrame(coundown);
+            loadSetting();
+            setCountdown();
         } else {
             localStorage.setItem('isCountdown', false);
-            clearInterval(countdown);
-            LoadSetting();
-            SetClock();
+            cancelAnimationFrame(coundown);
+            loadSetting();
+            setClock();
+        }
+    });
+    //Load edit shortcut
+    const popupEdit = document.getElementById('popup-edit');
+    if (popupEdit) {
+        popupEdit.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+            const name = button.getAttribute('data-bs-name');
+            const url = button.getAttribute('data-bs-url');
+            popupEdit.querySelector('#edit-shortcut-name').value = name;
+            popupEdit.querySelector('#edit-shortcut-url').value = url.replace('https://', '');
+            popupEdit.querySelector('#edit-shortcut-oldurl').value = url;
+
+            let index = defaultShortcut.findIndex(item => item.url.includes(url));
+            if (index == -1) {
+                document.getElementById('btn-edit').classList.add('d-flex');
+                document.getElementById('btn-edit').classList.remove('d-none');
+                document.getElementById('btn-remove').classList.add('d-flex');
+                document.getElementById('btn-remove').classList.remove('d-none');
+            } else {
+                document.getElementById('btn-edit').classList.remove('d-flex');
+                document.getElementById('btn-edit').classList.add('d-none');
+                document.getElementById('btn-remove').classList.remove('d-flex');
+                document.getElementById('btn-remove').classList.add('d-none');
+            }
+        });
+    }
+
+    document.getElementById("btn-edit").addEventListener('click', function () {
+        const oldUrl = document.getElementById('edit-shortcut-oldurl').value;
+        const url = document.getElementById('edit-shortcut-url').value;
+        const name = document.getElementById('edit-shortcut-name').value;
+        if (oldUrl && url && name) {
+            let isEditDefaultShortcut = defaultShortcut.some(item => item.url === oldUrl);
+            if (isEditDefaultShortcut) return;
+
+            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
+            let index = localShortCut.findIndex(item => item.url === oldUrl);
+            if (index != -1) {
+                localShortCut[index].name = name;
+                localShortCut[index].url = `https://${url}`;
+                localShortCut[index].icon = `https://www.google.com/s2/favicons?domain=${url}&sz=48`;
+
+                localStorage.setItem('shortcut', JSON.stringify(localShortCut));
+                document.getElementById('edit-shortcut-oldurl').value = "";
+                document.getElementById('edit-shortcut-url').value = "";
+                document.getElementById('edit-shortcut-name').value = "";
+                loadShortcut();
+            }
+        }
+    });
+
+    document.getElementById("btn-remove").addEventListener('click', function () {
+        const oldUrl = document.getElementById('edit-shortcut-oldurl').value;
+        if (oldUrl) {
+            let isEditDefaultShortcut = defaultShortcut.some(item => item.url === oldUrl);
+            if (isEditDefaultShortcut) return;
+
+            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
+            localShortCut = localShortCut.filter(item => item.url !== oldUrl);
+            localStorage.setItem('shortcut', JSON.stringify(localShortCut));
+
+            document.getElementById('edit-shortcut-oldurl').value = "";
+            document.getElementById('edit-shortcut-url').value = "";
+            document.getElementById('edit-shortcut-name').value = "";
+            loadShortcut();
         }
     });
 }
 
-function LoadDate() {
-    var date = new Date();
-    var day = date.getDate();
+function loadDate() {
+    const date = new Date();
+    let day = date.getDate();
     day = day < 10 ? "0" + day : day;
     const year = date.getFullYear();
 
-    document.getElementById("month").innerHTML =
-        day + " " + date.toLocaleString("default", { month: "long" });
+    document.getElementById("month").innerHTML = `${day} ${date.toLocaleString("default", { month: "long" })}`;
     document.getElementById("year").innerHTML = year;
 }
 
-function SetCountdown() {
+function flipContainers(className, value) {
+    const elements = document.getElementsByClassName(className);
+    let oldValue = value;
+    for (let index = 0; index < elements.length; index++) {
+        oldValue = elements[index].innerText;
+        elements[index].innerText =
+            value < 10 ? "0" + value.toString() : value.toString();
+    }
+    if (oldValue != value) {
+        document.getElementById(className + "Flip").classList.toggle("flipped");
+    }
+}
+
+function setCountdown() {
     document.getElementById("notify").classList.add('hide');
     document.getElementById("countdown").classList.remove('hide');
-    countdown = setInterval(() => {
+    function updateFlip() {
         const now = new Date();
         const timeRemaining = targetDate - now;
         const hours = Math.floor(
@@ -237,93 +326,32 @@ function SetCountdown() {
         );
         const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-        var hoursElements = document.getElementsByClassName("hours");
-        var hoursOldValue = hours;
-        for (let index = 0; index < hoursElements.length; index++) {
-            hoursOldValue = hoursElements[index].innerText;
-            hoursElements[index].innerText =
-                hours < 10 ? "0" + hours.toString() : hours.toString();
-        }
-        if (hoursOldValue != hours) {
-            const flipContainers = document.getElementById("hoursFlip");
-            flipContainers.classList.toggle("flipped");
-        }
+        flipContainers("hours", hours);
+        flipContainers("minutes", minutes);
+        flipContainers("seconds", seconds);
 
-        var minutesElements = document.getElementsByClassName("minutes");
-        var minutesOldValue = minutes;
-        for (let index = 0; index < minutesElements.length; index++) {
-            minutesOldValue = minutesElements[index].innerText;
-            minutesElements[index].innerText =
-                minutes < 10 ? "0" + minutes.toString() : minutes.toString();
+        if (timeRemaining > 0) {
+            coundown = requestAnimationFrame(updateFlip);
+        } else {
+            notifyMe();
         }
-        if (minutesOldValue != minutes) {
-            const flipContainers = document.getElementById("minutesFlip");
-            flipContainers.classList.toggle("flipped");
-        }
-
-        var secondsElements = document.getElementsByClassName("seconds");
-        var secondsOldValue = seconds;
-        for (let index = 0; index < secondsElements.length; index++) {
-            secondsOldValue = secondsElements[index].innerText;
-            secondsElements[index].innerText =
-                seconds < 10 ? "0" + seconds.toString() : seconds.toString();
-        }
-        if (secondsOldValue != seconds) {
-            const flipContainers = document.getElementById("secondsFlip");
-            flipContainers.classList.toggle("flipped");
-        }
-
-        if (timeRemaining < 0) {
-            NotifyMe();
-            clearInterval(countdown);
-        }
-    }, 1000);
+    }
+    coundown = requestAnimationFrame(updateFlip);
 }
 
-function SetClock() {
+function setClock() {
     document.getElementById("notify").classList.add('hide');
     document.getElementById("countdown").classList.remove('hide');
-    countdown = setInterval(() => {
+    function updateFlip() {
         const now = new Date();
         const hours = now.getHours();
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
 
-        // Display the time remaining
-        var hoursElements = document.getElementsByClassName("hours");
-        var hoursOldValue = hours;
-        for (let index = 0; index < hoursElements.length; index++) {
-            hoursOldValue = hoursElements[index].innerText;
-            hoursElements[index].innerText =
-                hours < 10 ? "0" + hours.toString() : hours.toString();
-        }
-        if (hoursOldValue != hours) {
-            const flipContainers = document.getElementById("hoursFlip");
-            flipContainers.classList.toggle("flipped");
-        }
-
-        var minutesElements = document.getElementsByClassName("minutes");
-        var minutesOldValue = minutes;
-        for (let index = 0; index < minutesElements.length; index++) {
-            minutesOldValue = minutesElements[index].innerText;
-            minutesElements[index].innerText =
-                minutes < 10 ? "0" + minutes.toString() : minutes.toString();
-        }
-        if (minutesOldValue != minutes) {
-            const flipContainers = document.getElementById("minutesFlip");
-            flipContainers.classList.toggle("flipped");
-        }
-
-        var secondsElements = document.getElementsByClassName("seconds");
-        var secondsOldValue = seconds;
-        for (let index = 0; index < secondsElements.length; index++) {
-            secondsOldValue = secondsElements[index].innerText;
-            secondsElements[index].innerText =
-                seconds < 10 ? "0" + seconds.toString() : seconds.toString();
-        }
-        if (secondsOldValue != seconds) {
-            const flipContainers = document.getElementById("secondsFlip");
-            flipContainers.classList.toggle("flipped");
-        }
-    }, 1000);
+        flipContainers("hours", hours);
+        flipContainers("minutes", minutes);
+        flipContainers("seconds", seconds);
+        coundown = requestAnimationFrame(updateFlip);
+    }
+    coundown = requestAnimationFrame(updateFlip);
 }

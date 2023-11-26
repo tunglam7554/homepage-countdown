@@ -135,15 +135,14 @@
                 </div>
                 <div class="modal-body">
                     <form class="w-100">
-                        <div class="mb-3">
-                            <label for="name" class="col-form-label">Name:</label>
-                            <input type="text" class="form-control" id="shortcut-name">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="shortcut-name" placeholder="Name">
+                            <label for="name">Name</label>
                         </div>
-                        <div class="mb-3">
-                            <label for="url" class="col-form-label">Url:</label>
-                            <div class="input-group">
-                                <span class="input-group-text">https://</span>
-                                <input class="form-control" id="shortcut-url">
+                        <div class="input-group mb-3">
+                            <div class="form-floating">
+                                <input class="form-control" id="shortcut-url" placeholder="https://">
+                                <label for="url">https://</label>
                             </div>
                         </div>
                     </form>
@@ -151,6 +150,43 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-accent" data-bs-dismiss="modal" id="btn-add">Add</button>
                     <button type="button" class="btn btn-text" data-bs-dismiss="modal" id="btn-cancel">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-black" id="popup-edit" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Edit shortcut</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="w-100">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="edit-shortcut-name" placeholder="Name">
+                            <label for="name">Name</label>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="form-floating">
+                                <input class="form-control" id="edit-shortcut-url" placeholder="https://">
+                                <label for="url">https://</label>
+                            </div>
+                        </div>
+                        <input type="hidden" id="edit-shortcut-oldurl">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex justify-content-between w-100">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            id="btn-remove">Remove</button>
+                        <div class="d-flex flex-grow-1 justify-content-end">
+                            <button type="button" class="btn btn-accent" data-bs-dismiss="modal" id="btn-edit">Save
+                                change</button>
+                            <button type="button" class="btn btn-text" data-bs-dismiss="modal"
+                                id="btn-cancel">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
