@@ -226,6 +226,8 @@ body {
 .web-item a {
     color: var(--white);
     text-decoration: none;
+    flex-direction: column;
+    text-align: center;
 }
 
 .web-item .web-item-bg {
