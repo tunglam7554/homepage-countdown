@@ -66,7 +66,7 @@ async function loadWallpaper() {
 
     if (!url || !updatedAt || new Date(updatedAt) < today) {
         try {
-            const response = fetch(wallpaperAPI);
+            const response = await fetch(wallpaperAPI);
             const data = await response.json();
 
             elements.body.style.backgroundImage = `url(${data.url})`;
