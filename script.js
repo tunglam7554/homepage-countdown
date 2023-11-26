@@ -3,7 +3,7 @@ var isCountdown;
 var coundown;
 var targetDate;
 var setting_selected_countdown;
-GetWallpaper();
+LoadWallpaper();
 LoadDate();
 AddEventListener();
 LoadSetting();
@@ -12,6 +12,7 @@ if (isCountdown) {
 } else {
     SetClock();
 }
+LoadShortCut();
 
 function NotifyMe() {
     document.getElementById("notify").classList.remove('hide');
@@ -30,12 +31,12 @@ function NotifyMe() {
     }
 }
 
-function GetWallpaper() {
+function LoadWallpaper() {
     var wallpaper = JSON.parse(localStorage.getItem('wallpaper'));
     var url = wallpaper?.url;
     var updatedAt = new Date(wallpaper?.updatedAt);
     const today = new Date();
-    today.setHours(7, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
     if (!wallpaper || !url || !updatedAt || updatedAt < today) {
         var api =
             "https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-US";
@@ -45,9 +46,11 @@ function GetWallpaper() {
             if (this.readyState == 4 && this.status == 200) {
                 var response = JSON.parse(xhttp.responseText);
                 console.log(response);
+                var updateTime = new Date();
                 document.getElementById("body").style.backgroundImage =
                     "url(" + response.url + ")";
-                localStorage.setItem('wallpaper', JSON.stringify({ url: response.url, updatedAt: new Date() }));
+                localStorage.setItem('wallpaper', JSON.stringify({ url: response.url, updatedAt: updateTime }));
+                document.getElementById("update-time").innerText = updateTime.toLocaleString();
             }
         };
         xhttp.open("GET", api);
@@ -59,70 +62,15 @@ function GetWallpaper() {
     }
 }
 
-function AddEventListener() {
-    var overlay = document.getElementById('overlay');
-    var popup = document.getElementById('popup');
-    overlay.addEventListener('click', function () {
-        if (!overlay.classList.contains('hide'))
-            overlay.classList.add('hide');
-    });
-    document.getElementById('btn-setting').addEventListener('click', function () {
-        overlay.classList.toggle('hide');
-    });
-    popup.addEventListener('click', function (e) {
-        e.stopPropagation();
-    });
-    document.getElementById('setting-shortcut').addEventListener('click', function () {
-        overlay.classList.toggle('hide');
-    });
-    var clock_type_time = document.getElementById('clock_type:time');
-    clock_type_time.addEventListener('click', function () {
-        setting_selected_countdown = false;
-        document.getElementById('time-picker').disabled = true;
-        document.getElementById('clock_type:countdown').classList.remove("selected");
-        document.getElementById('clock_type:time').classList.add("selected");
-    });
-    var clock_type_countdown = document.getElementById('clock_type:countdown');
-    clock_type_countdown.addEventListener('click', function () {
-        setting_selected_countdown = true;
-        document.getElementById('time-picker').disabled = false;
-        document.getElementById('clock_type:countdown').classList.add("selected");
-        document.getElementById('clock_type:time').classList.remove("selected");
-    });
-
-    document.getElementById('btn-save').addEventListener('click', function () {
-        if (setting_selected_countdown == true) {
-            var value = document.getElementById('time-picker').value;
-            if (value == null || value == "") {
-                alert("You must set time for timer!");
-                return;
-            }
-
-            localStorage.setItem('timer', value);
-            localStorage.setItem('isCountdown', true);
-            clearInterval(countdown);
-            LoadSetting()
-            SetCountdown();
-        } else {
-            localStorage.setItem('isCountdown', false);
-            clearInterval(countdown);
-            LoadSetting();
-            SetClock();
-        }
-        overlay.classList.add('hide');
-    });
-
-    document.getElementById('btn-cancel').addEventListener('click', function () {
-        LoadSetting();
-        overlay.classList.add('hide');
-    });
-}
-
 function LoadSetting() {
     dev = JSON.parse(localStorage.getItem('dev'));
     isCountdown = JSON.parse(localStorage.getItem('isCountdown'));
     setting_selected_countdown = isCountdown;
     const timer = localStorage.getItem('timer');
+    var wallpaper = JSON.parse(localStorage.getItem('wallpaper'));
+    if (wallpaper != null && wallpaper.updatedAt != null) {
+        document.getElementById("update-time").innerText = (new Date(wallpaper.updatedAt).toLocaleString());
+    }
     document.getElementById('time-picker').value = timer;
     if (isCountdown) {
         document.getElementById('time-picker').disabled = false;
@@ -152,6 +100,116 @@ function LoadSetting() {
         document.getElementById('clock_type:countdown').classList.remove("selected");
         document.getElementById('clock_type:time').classList.add("selected");
     }
+}
+
+function LoadShortCut() {
+    var listShortCut = `<a href="https://tulavideo.web.app" class="web-item" target="_blank">
+            <div class="web-item-bg">
+                <img src="./assets/tulavideo.png" />
+            </div>
+            <span>TulaVideo</span>
+        </a>
+        <a href="https://tulamusic.web.app" class="web-item" target="_blank">
+            <div class="web-item-bg">
+                <img src="./assets/tulamusic.png" />
+            </div>
+            <span>TulaMusic</span>
+        </a>
+        <a href="https://tulavideo.web.app/toptop" class="web-item" target="_blank">
+            <div class="web-item-bg">
+                <img src="./assets/tik-tok.png" />
+            </div>
+            <span>TopTop</span>
+        </a>`;
+
+    var shortCut = JSON.parse(localStorage.getItem('shortcut'));
+    shortCut?.map(item => {
+        listShortCut += `<a href="${item.url}" class="web-item" target="_blank">
+                <div class="web-item-bg">
+                    <img src="${item.icon}" />
+                </div>
+                <span>${item.name}</span>
+            </a>`;
+    });
+
+    listShortCut += `<div class="web-item" data-bs-toggle="modal" data-bs-target="#popup-add">
+        <div class="web-item-bg">
+            <img src="./assets/add.png" style="height: 24px;width: 24px;" />
+        </div>
+    </div>`;
+    document.getElementById('web-grid').innerHTML = listShortCut;
+
+    document.getElementById('btn-add').addEventListener('click', function () {
+        var name = document.getElementById('shortcut-name').value;
+        var url = document.getElementById('shortcut-url').value;
+        if (name != null && name != "" && url != null && url != "") {
+            var newShortCut = {
+                url: "https://" + url,
+                name: name,
+                icon: `https://www.google.com/s2/favicons?domain=${url}&sz=48`
+            }
+            var listShortCut = JSON.parse(localStorage.getItem('shortcut'));
+            if (listShortCut != null) {
+                if (listShortCut.findIndex(item => item.url == newShortCut.url) == -1) {
+                    listShortCut.push(newShortCut);
+                } else {
+                    alert("This website already added!");
+                    return;
+                }
+            } else {
+                listShortCut = [newShortCut];
+            }
+            localStorage.setItem('shortcut', JSON.stringify(listShortCut));
+            LoadShortCut();
+            document.getElementById('shortcut-name').value = "";
+            document.getElementById('shortcut-url').value = "";
+        }
+    });
+}
+
+function AddEventListener() {
+    const modalSetting = document.getElementById('popup-setting');
+    modalSetting.addEventListener('show.bs.modal', LoadSetting);
+
+    document.getElementById('clock_type:time').addEventListener('click', function () {
+        setting_selected_countdown = false;
+        document.getElementById('time-picker').disabled = true;
+        document.getElementById('clock_type:countdown').classList.remove("selected");
+        document.getElementById('clock_type:time').classList.add("selected");
+    });
+
+    document.getElementById('clock_type:countdown').addEventListener('click', function () {
+        setting_selected_countdown = true;
+        document.getElementById('time-picker').disabled = false;
+        document.getElementById('clock_type:countdown').classList.add("selected");
+        document.getElementById('clock_type:time').classList.remove("selected");
+    });
+
+    document.getElementById('btn-new-wallpaper').addEventListener('click', function () {
+        localStorage.setItem('wallpaper', null);
+        LoadWallpaper();
+    });
+
+    document.getElementById('btn-save').addEventListener('click', function () {
+        if (setting_selected_countdown == true) {
+            var value = document.getElementById('time-picker').value;
+            if (value == null || value == "") {
+                alert("You must set time for timer!");
+                return;
+            }
+
+            localStorage.setItem('timer', value);
+            localStorage.setItem('isCountdown', true);
+            clearInterval(countdown);
+            LoadSetting();
+            SetCountdown();
+        } else {
+            localStorage.setItem('isCountdown', false);
+            clearInterval(countdown);
+            LoadSetting();
+            SetClock();
+        }
+    });
 }
 
 function LoadDate() {
