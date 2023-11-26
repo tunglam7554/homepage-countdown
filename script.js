@@ -238,11 +238,15 @@ function addEventListener() {
                 document.getElementById('btn-edit').classList.remove('d-none');
                 document.getElementById('btn-remove').classList.add('d-flex');
                 document.getElementById('btn-remove').classList.remove('d-none');
+                popupEdit.querySelector('#edit-shortcut-name').disabled = false;
+                popupEdit.querySelector('#edit-shortcut-url').disabled = false;
             } else {
                 document.getElementById('btn-edit').classList.remove('d-flex');
                 document.getElementById('btn-edit').classList.add('d-none');
                 document.getElementById('btn-remove').classList.remove('d-flex');
                 document.getElementById('btn-remove').classList.add('d-none');
+                popupEdit.querySelector('#edit-shortcut-name').disabled = true;
+                popupEdit.querySelector('#edit-shortcut-url').disabled = true;
             }
         });
     }
