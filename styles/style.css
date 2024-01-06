@@ -89,6 +89,7 @@ body {
     justify-content: end;
     margin-left: 10px;
     color: var(--white);
+    text-shadow: -1px -1px 0px #00000055;
 }
 
 .flip-container {
@@ -146,6 +147,7 @@ body {
     margin: 2px 0px;
     font-size: 27px;
     color: var(--white);
+    text-shadow: -1px -1px 0px #00000055;
 }
 
 .hours,
@@ -157,6 +159,7 @@ body {
     font-size: 64px;
     font-weight: 400;
     color: var(--white);
+    text-shadow: -1px -1px 0px #00000055;
 }
 
 .search-form {
@@ -197,6 +200,22 @@ body {
     fill: var(--black);
 }
 
+.form-switch {
+    padding-left: 3rem;
+}
+
+.form-switch .form-check-input {
+    height: 1.5rem;
+    width: 3rem;
+    margin-left: -3.5rem;
+    margin-top: 0;
+}
+
+.form-check-input:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
 #btn-search {
     position: absolute;
     top: 7px;
@@ -226,6 +245,8 @@ body {
 .web-item a {
     color: var(--white);
     text-decoration: none;
+    text-align: center;
+    text-shadow: -1px -1px 0px #00000055;
 }
 
 .web-item .web-item-bg {

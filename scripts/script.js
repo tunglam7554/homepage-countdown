@@ -1,12 +1,27 @@
 const wallpaperAPI = "https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-US";
-let dev, isCountdown, coundown, targetDate, isSelectedCountdown;
+let dev, coundown, targetDate;
+
+let loadedSetting = {
+    isCountdown: JSON.parse(localStorage.getItem('isCountdown')) || false,
+    isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || false,
+    isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) || false
+};
+
+let selectedSetting = {
+    isCountdown: loadedSetting.isCountdown,
+    isOpenLinkInNewTab: loadedSetting.isOpenLinkInNewTab,
+    isRefreshWallpaper: loadedSetting.isRefreshWallpaper
+};
+
 const elements = {
     body: document.getElementById("body"),
     updateTime: document.getElementById("update-time"),
-    timePicker: document.getElementById("time-picker"),
-    countdownType: {
-        countdown: document.getElementById("clock_type:countdown"),
-        time: document.getElementById("clock_type:time"),
+    timePicker: document.getElementById("setting:time-picker"),
+    setting: {
+        countdown: document.getElementById("setting:clock_type-countdown"),
+        time: document.getElementById("setting:clock_type-time"),
+        refreshWallpaper: document.getElementById("setting:refresh-wallpaper"),
+        openInNewTab: document.getElementById("setting:open-in-newtab"),
     },
     webGrid: document.getElementById("web-grid"),
     shortcutName: document.getElementById("shortcut-name"),
@@ -36,7 +51,7 @@ function initialize() {
     loadDate();
     addEventListener();
     loadSetting();
-    isCountdown ? setCountdown() : setClock();
+    loadedSetting.isCountdown ? setCountdown() : setClock();
     loadShortcut();
 }
 
@@ -60,25 +75,27 @@ function notifyMe() {
 async function loadWallpaper() {
     let wallpaper = JSON.parse(localStorage.getItem('wallpaper')) || {};
     let { url, updatedAt } = wallpaper;
+    if (loadedSetting.isRefreshWallpaper) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (!url || !updatedAt || new Date(updatedAt) < today) {
+            try {
+                const response = await fetch(wallpaperAPI);
+                const data = await response.json();
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+                elements.body.style.backgroundImage = `url(${data.url})`;
 
-    if (!url || !updatedAt || new Date(updatedAt) < today) {
-        try {
-            const response = await fetch(wallpaperAPI);
-            const data = await response.json();
-
-            elements.body.style.backgroundImage = `url(${data.url})`;
-
-            let updateTime = new Date();
-            localStorage.setItem('wallpaper', JSON.stringify({ url: data.url, updatedAt: updateTime }));
-            elements.updateTime.innerText = updateTime.toLocaleString();
-        } catch (error) {
-            console.error(error);
-            return;
+                let updateTime = new Date();
+                localStorage.setItem('wallpaper', JSON.stringify({ url: data.url, updatedAt: updateTime }));
+                elements.updateTime.innerText = updateTime.toLocaleString();
+            } catch (error) {
+                console.error(error);
+                return;
+            }
+        } else {
+            elements.body.style.backgroundImage = `url(${url})`;
         }
-    } else {
+    } else if (url) {
         elements.body.style.backgroundImage = `url(${url})`;
     }
 }
@@ -94,20 +111,28 @@ function loadSetting() {
     const timer = localStorage.getItem('timer');
     elements.timePicker.value = timer;
     //load clock type
-    isCountdown = JSON.parse(localStorage.getItem('isCountdown')) || false;
-    isSelectedCountdown = isCountdown;
+    loadedSetting.isCountdown = JSON.parse(localStorage.getItem('isCountdown')) || false;
+    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || false;
+    loadedSetting.isRefreshWallpaper = JSON.parse(localStorage.getItem('isRefreshWallpaper')) || false;
 
-    if (isCountdown) {
+    if (loadedSetting.isCountdown) {
         elements.timePicker.disabled = false;
-        elements.countdownType.countdown.classList.add("selected");
-        elements.countdownType.time.classList.remove("selected");
+        elements.setting.countdown.classList.add("selected");
+        elements.setting.time.classList.remove("selected");
 
         targetDate = calculateTargetDate(timer);
     } else {
         elements.timePicker.disabled = true;
-        elements.countdownType.countdown.classList.remove("selected");
-        elements.countdownType.time.classList.add("selected");
+        elements.setting.countdown.classList.remove("selected");
+        elements.setting.time.classList.add("selected");
     }
+
+    elements.setting.openInNewTab.checked = loadedSetting.isOpenLinkInNewTab;
+    elements.setting.refreshWallpaper.checked = loadedSetting.isRefreshWallpaper;
+
+    selectedSetting.isCountdown = loadedSetting.isCountdown;
+    selectedSetting.isOpenLinkInNewTab = loadedSetting.isOpenLinkInNewTab;
+    selectedSetting.isRefreshWallpaper = loadedSetting.isRefreshWallpaper;
 }
 
 function calculateTargetDate(timer) {
@@ -128,9 +153,10 @@ function loadShortcut() {
     let listShortCut = "";
     let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
     let shortCut = [...defaultShortcut, ...localShortCut];
+    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || false;
 
     shortCut.forEach(item => {
-        listShortCut += `<div class="web-item"><a href="${item.url}"target="_blank">
+        listShortCut += `<div class="web-item"><a href="${item.url}"${loadedSetting.isOpenLinkInNewTab ? 'target="_blank"' : ''}>
                 <div class="web-item-bg">
                     <img src="${item.icon}" />
                 </div>
@@ -182,43 +208,66 @@ function addEventListener() {
     const modalSetting = document.getElementById('popup-setting');
     modalSetting.addEventListener('show.bs.modal', loadSetting);
     //Add event select clock setting
-    elements.countdownType.time.addEventListener('click', function () {
-        isSelectedCountdown = false;
+    elements.setting.time.addEventListener('click', function () {
+        selectedSetting.isCountdown = false;
         elements.timePicker.disabled = true;
-        elements.countdownType.countdown.classList.remove("selected");
-        elements.countdownType.time.classList.add("selected");
+        elements.setting.countdown.classList.remove("selected");
+        elements.setting.time.classList.add("selected");
     });
     //Add event select countdown setting
-    elements.countdownType.countdown.addEventListener('click', function () {
-        isSelectedCountdown = true;
+    elements.setting.countdown.addEventListener('click', function () {
+        selectedSetting.isCountdown = true;
         elements.timePicker.disabled = false;
-        elements.countdownType.countdown.classList.add("selected");
-        elements.countdownType.time.classList.remove("selected");
+        elements.setting.countdown.classList.add("selected");
+        elements.setting.time.classList.remove("selected");
     });
     //Add event get new wallpaper
     document.getElementById('btn-new-wallpaper').addEventListener('click', function () {
         localStorage.removeItem('wallpaper');
         loadWallpaper();
     });
+    //Add event select refresh wallpaper setting
+    elements.setting.refreshWallpaper.addEventListener('change', function () {
+        selectedSetting.isRefreshWallpaper = elements.setting.refreshWallpaper.checked;
+    });
+    //Add event select open link in new tab setting
+    elements.setting.openInNewTab.addEventListener('change', function () {
+        selectedSetting.isOpenLinkInNewTab = elements.setting.openInNewTab.checked;
+    });
     //Add event save setting
     document.getElementById('btn-save').addEventListener('click', function () {
-        if (isSelectedCountdown) {
-            const timer = elements.timePicker.value;
-            if (!timer) {
-                alert("You must set time for timer!");
-                return;
+        if (selectedSetting.isRefreshWallpaper != loadedSetting.isRefreshWallpaper) {
+            localStorage.setItem('isRefreshWallpaper', selectedSetting.isRefreshWallpaper);
+            if (selectedSetting.isRefreshWallpaper) {
+                localStorage.removeItem('wallpaper');
+                loadWallpaper();
             }
+        }
 
-            localStorage.setItem('timer', timer);
-            localStorage.setItem('isCountdown', true);
-            cancelAnimationFrame(coundown);
-            loadSetting();
-            setCountdown();
-        } else {
-            localStorage.setItem('isCountdown', false);
-            cancelAnimationFrame(coundown);
-            loadSetting();
-            setClock();
+        if (selectedSetting.isOpenLinkInNewTab != loadedSetting.isOpenLinkInNewTab) {
+            localStorage.setItem('isOpenLinkInNewTab', selectedSetting.isOpenLinkInNewTab);
+            loadShortcut();
+        }
+
+        if (selectedSetting.isCountdown != loadedSetting.isCountdown) {
+            if (selectedSetting.isCountdown) {
+                const timer = elements.timePicker.value;
+                if (!timer) {
+                    alert("You must set time for timer!");
+                    return;
+                }
+
+                localStorage.setItem('timer', timer);
+                localStorage.setItem('isCountdown', true);
+                cancelAnimationFrame(coundown);
+                loadSetting();
+                setCountdown();
+            } else {
+                localStorage.setItem('isCountdown', false);
+                cancelAnimationFrame(coundown);
+                loadSetting();
+                setClock();
+            }
         }
     });
     //Load edit shortcut
