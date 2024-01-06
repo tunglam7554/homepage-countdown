@@ -3,8 +3,8 @@ let dev, coundown, targetDate;
 
 let loadedSetting = {
     isCountdown: JSON.parse(localStorage.getItem('isCountdown')) || false,
-    isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || false,
-    isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) || false
+    isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || true,
+    isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) || true
 };
 
 let selectedSetting = {
@@ -112,8 +112,8 @@ function loadSetting() {
     elements.timePicker.value = timer;
     //load clock type
     loadedSetting.isCountdown = JSON.parse(localStorage.getItem('isCountdown')) || false;
-    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || false;
-    loadedSetting.isRefreshWallpaper = JSON.parse(localStorage.getItem('isRefreshWallpaper')) || false;
+    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || true;
+    loadedSetting.isRefreshWallpaper = JSON.parse(localStorage.getItem('isRefreshWallpaper')) || true;
 
     if (loadedSetting.isCountdown) {
         elements.timePicker.disabled = false;
@@ -153,7 +153,7 @@ function loadShortcut() {
     let listShortCut = "";
     let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
     let shortCut = [...defaultShortcut, ...localShortCut];
-    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || false;
+    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || true;
 
     shortCut.forEach(item => {
         listShortCut += `<div class="web-item"><a href="${item.url}"${loadedSetting.isOpenLinkInNewTab ? 'target="_blank"' : ''}>

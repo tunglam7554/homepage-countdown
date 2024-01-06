@@ -49,6 +49,10 @@ body {
         linear-gradient(180deg, rgb(0 0 0 / 0.15) 0%, transparent 100%);
 }
 
+.label {
+    text-shadow: -1px -1px 0px #00000055;
+}
+
 .overlay {
     position: absolute;
     top: 0;
@@ -273,6 +277,7 @@ body {
 
 .web-item span {
     margin-top: 4px;
+    text-shadow: -1px -1px 0px #00000055;
 }
 
 .web-item:hover .btn-edit {
