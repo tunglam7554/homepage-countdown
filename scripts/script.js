@@ -2,9 +2,9 @@ const wallpaperAPI = "https://bing.biturl.top/?resolution=1920&format=json&index
 let dev, coundown, targetDate;
 
 let loadedSetting = {
-    isCountdown: JSON.parse(localStorage.getItem('isCountdown')) || false,
-    isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || true,
-    isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) || true
+    isCountdown: JSON.parse(localStorage.getItem('isCountdown')) ?? false,
+    isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? true,
+    isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) ?? true
 };
 
 let selectedSetting = {
@@ -111,9 +111,9 @@ function loadSetting() {
     const timer = localStorage.getItem('timer');
     elements.timePicker.value = timer;
     //load clock type
-    loadedSetting.isCountdown = JSON.parse(localStorage.getItem('isCountdown')) || false;
-    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || true;
-    loadedSetting.isRefreshWallpaper = JSON.parse(localStorage.getItem('isRefreshWallpaper')) || true;
+    loadedSetting.isCountdown = JSON.parse(localStorage.getItem('isCountdown')) ?? false;
+    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? true;
+    loadedSetting.isRefreshWallpaper = JSON.parse(localStorage.getItem('isRefreshWallpaper')) ?? true;
 
     if (loadedSetting.isCountdown) {
         elements.timePicker.disabled = false;
@@ -151,9 +151,9 @@ function calculateTargetDate(timer) {
 
 function loadShortcut() {
     let listShortCut = "";
-    let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
+    let localShortCut = JSON.parse(localStorage.getItem('shortcut')) ?? [];
     let shortCut = [...defaultShortcut, ...localShortCut];
-    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) || true;
+    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? true;
 
     shortCut.forEach(item => {
         listShortCut += `<div class="web-item"><a href="${item.url}"${loadedSetting.isOpenLinkInNewTab ? 'target="_blank"' : ''}>
@@ -187,7 +187,7 @@ function loadShortcut() {
                 icon: `https://www.google.com/s2/favicons?domain=${url}&sz=48`
             };
 
-            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
+            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) ?? [];
             let listShortCut = [...defaultShortcut, ...localShortCut];
 
             if (!listShortCut.some(item => item.url == newShortCut.url)) {
