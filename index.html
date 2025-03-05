@@ -62,7 +62,7 @@
                 <p>Go home!</p>
             </div>
             <form id="search-form" class="search-form" action="https://google.com/search" method="get">
-                <input class="search-input" placeholder="Search anything..." name="q" />
+                <input class="search-input" placeholder="Search anything..." name="q" autocomplete="off" />
                 <div id="btn-search">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 24 24">
                         <path
@@ -202,11 +202,13 @@
                         <form class="w-100">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="shortcut-name" placeholder="Name">
+                                <input type="text" class="form-control" id="shortcut-name" placeholder="Name"
+                                    autocomplete="off">
                             </div>
                             <div class="mb-3">
                                 <label for="url" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="shortcut-url" placeholder="https://">
+                                <input type="text" class="form-control" id="shortcut-url" placeholder="https://"
+                                    autocomplete="off">
                             </div>
                         </form>
                     </div>
@@ -230,11 +232,13 @@
                     <form class="w-100">
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="edit-shortcut-name" placeholder="Name">
+                            <input type="text" class="form-control" id="edit-shortcut-name" placeholder="Name"
+                                autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label for="url" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="edit-shortcut-url" placeholder="https://">
+                            <input type="text" class="form-control" id="edit-shortcut-url" placeholder="https://"
+                                autocomplete="off">
                         </div>
                         <input type="hidden" id="edit-shortcut-oldurl">
                     </form>
