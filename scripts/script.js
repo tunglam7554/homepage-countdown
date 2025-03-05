@@ -32,11 +32,12 @@ const elements = {
     shortcutUrl: document.getElementById("shortcut-url"),
 };
 
-const defaultShortcut = [
-    { icon: "./assets/tulavideo.png", name: "TulaVideo", url: "https://tulavideo.web.app" },
-    { icon: "./assets/tulamusic.png", name: "TulaMusic", url: "https://tulamusic.web.app" },
-    { icon: "./assets/tik-tok.png", name: "TopTop", url: "https://tulavideo.web.app/toptop" }
-];
+// const defaultShortcut = [
+//     { icon: "./assets/tulavideo.png", name: "TulaVideo", url: "https://tulavideo.web.app" },
+//     { icon: "./assets/tulamusic.png", name: "TulaMusic", url: "https://tulamusic.web.app" },
+//     { icon: "./assets/tik-tok.png", name: "TopTop", url: "https://tulavideo.web.app/toptop" }
+// ];
+const defaultShortcut = [];
 
 var topSites = [
     { icon: "", name: "Google", url: "https://google.com" },
