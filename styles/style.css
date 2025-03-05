@@ -1,378 +1,456 @@
 :root {
-    --button-bg: rgba(41, 44, 46, .5);
-    --button-hover: rgba(0, 0, 0, 0.7);
-    --black: #000;
-    --white: #fff;
-    --overlay: rgba(0, 0, 0, 0.5);
-    --accent: #33cccc;
-    --accent-hover: #4cdfdf;
-    --secondary: #d6d6d6;
+  --button-bg: rgba(41, 44, 46, 0.5);
+  --button-hover: rgba(0, 0, 0, 0.7);
+  --black: #000;
+  --white: #fff;
+  --overlay: rgba(0, 0, 0, 0.5);
+  --accent: #33cccc;
+  --accent-hover: #4cdfdf;
+  --secondary: #d6d6d6;
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
-        sans-serif;
-    font-size: 16px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
 }
 
 body {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    color: var(--white);
-    background: rgb(15, 104, 235);
-    background: linear-gradient(135deg,
-            rgba(15, 104, 235, 1) 0%,
-            rgba(9, 98, 121, 1) 50%,
-            rgba(72, 205, 227, 1) 100%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  color: var(--white);
+  background: rgb(15, 104, 235);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 104, 235, 1) 0%,
+    rgba(9, 98, 121, 1) 50%,
+    rgba(72, 205, 227, 1) 100%
+  );
 }
 
 .bg-accent {
-    background-color: var(--accent);
-    color: var(--white);
+  background-color: var(--accent);
+  color: var(--white);
+}
+
+.color-accent {
+  color: var(--accent) !important;
 }
 
 .wrapper {
-    width: 100%;
-    height: 100%;
-    padding-top: 150px;
-    background-image: linear-gradient(0deg,
-            rgb(0 0 0 / 0.5) 0%,
-            transparent 24.29%),
-        linear-gradient(180deg, rgb(0 0 0 / 0.25) 0%, transparent 20.4%),
-        linear-gradient(180deg, rgb(0 0 0 / 0.15) 0%, transparent 100%);
+  width: 100%;
+  height: 100%;
+  padding-top: 150px;
+  background-image: linear-gradient(
+      0deg,
+      rgb(0 0 0 / 0.5) 0%,
+      transparent 24.29%
+    ),
+    linear-gradient(180deg, rgb(0 0 0 / 0.25) 0%, transparent 20.4%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.15) 0%, transparent 100%);
 }
 
 .label {
-    text-shadow: -1px -1px 0px #00000055;
+  text-shadow: -1px -1px 0px #00000055;
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--overlay);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--overlay);
 }
 
 .container {
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .countdown {
-    padding: 0 10px;
+  padding: 0 10px;
 }
 
 .countdown,
 .date,
 .notify {
-    display: flex;
+  display: flex;
 }
 
 .countdown.hide,
 .notify.hide,
 .overlay.hide,
-.time-picker.hide {
-    display: none;
+#setting_time-picker.hide {
+  display: none;
 }
 
 .date {
-    flex-direction: column;
-    justify-content: end;
-    margin-left: 10px;
-    color: var(--white);
-    text-shadow: -1px -1px 0px #00000055;
+  flex-direction: column;
+  justify-content: end;
+  margin-left: 10px;
+  color: var(--white);
+  text-shadow: -1px -1px 0px #00000055;
 }
 
 .flip-container {
-    perspective: 1000px;
-    margin: 0 10px;
+  perspective: 1000px;
+  margin: 0 10px;
 }
 
 .flip {
-    position: relative;
-    width: 81px;
-    height: 81px;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
+  position: relative;
+  width: 81px;
+  height: 81px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
 }
 
 .front,
 .back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
 }
 
 .front {
-    transform: rotateY(0deg);
+  transform: rotateY(0deg);
 }
 
 .back {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 .flip-container.flipped .flip {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 #daysFlip {
-    animation: flip 1s infinite;
+  animation: flip 1s infinite;
 }
 
 @keyframes flip {
-    0% {
-        transform: rotateY(0deg);
-    }
+  0% {
+    transform: rotateY(0deg);
+  }
 
-    50% {
-        transform: rotateY(180deg);
-    }
+  50% {
+    transform: rotateY(180deg);
+  }
 
-    100% {
-        transform: rotateY(0deg);
-    }
+  100% {
+    transform: rotateY(0deg);
+  }
 }
 
 .date span {
-    margin: 2px 0px;
-    font-size: 27px;
-    color: var(--white);
-    text-shadow: -1px -1px 0px #00000055;
+  margin: 2px 0px;
+  font-size: 27px;
+  color: var(--white);
+  text-shadow: -1px -1px 0px #00000055;
 }
 
 .hours,
 .minutes,
 .seconds,
 .notify {
-    display: block;
-    text-align: center;
-    font-size: 64px;
-    font-weight: 400;
-    color: var(--white);
-    text-shadow: -1px -1px 0px #00000055;
+  display: block;
+  text-align: center;
+  font-size: 64px;
+  font-weight: 400;
+  color: var(--white);
+  text-shadow: -1px -1px 0px #00000055;
 }
 
 .search-form {
-    position: relative;
-    margin-top: 30px;
-    padding: 0 10px;
+  position: relative;
+  margin-top: 30px;
+  padding: 0 10px;
 }
 
 ::placeholder {
-    color: var(--white);
-    font-style: italic;
+  color: var(--white);
+  font-style: italic;
 }
 
 .search-input {
-    width: 100%;
-    height: 42px;
-    padding: 4px 50px;
-    border-radius: 20px;
-    border: none;
-    display: flex;
-    align-items: center;
-    font-size: 18px;
-    font-weight: 300;
-    backdrop-filter: blur(10px) saturate(125%);
-    background-color: var(--button-bg);
+  width: 100%;
+  height: 42px;
+  padding: 4px 50px;
+  border-radius: 20px;
+  border: none;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 300;
+  backdrop-filter: blur(10px) saturate(125%);
+  background-color: var(--button-bg);
 }
 
 .search-input:hover {
-    background-color: var(--button-hover);
+  background-color: var(--button-hover);
 }
 
 .search-input:focus {
-    outline: none;
-    background-color: var(--white);
+  outline: none;
+  background-color: var(--white);
 }
 
-.search-input:focus+#btn-search svg {
-    fill: var(--black);
+.search-input:focus + #btn-search svg {
+  fill: var(--black);
 }
 
 .form-switch {
-    padding-left: 3rem;
+  padding-left: 3rem;
 }
 
 .form-switch .form-check-input {
-    height: 1.5rem;
-    width: 3rem;
-    margin-left: -3.5rem;
-    margin-top: 0;
+  height: 1.5rem;
+  width: 3rem;
+  margin-left: -3.5rem;
+  margin-top: 0;
 }
 
 .form-check-input:checked {
-    background-color: var(--accent);
-    border-color: var(--accent);
+  background-color: var(--accent);
+  border-color: var(--accent);
 }
 
 #btn-search {
-    position: absolute;
-    top: 7px;
-    left: 25px;
-    background-color: transparent;
+  position: absolute;
+  top: 7px;
+  left: 25px;
+  background-color: transparent;
 }
 
 .web-grid {
-    margin-top: 40px;
-    display: grid;
-    flex-direction: row;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 10px;
+  margin-top: 40px;
+  display: grid;
+  flex-direction: row;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
 }
 
 .web-item {
-    height: 97px;
-    width: 92px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
+  height: 97px;
+  width: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
 }
 
 .web-item a {
-    color: var(--white);
-    text-decoration: none;
-    text-align: center;
-    text-shadow: -1px -1px 0px #00000055;
+  color: var(--white);
+  text-decoration: none;
+  text-align: center;
+  text-shadow: -1px -1px 0px #00000055;
 }
 
 .web-item .web-item-bg {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    height: 72px;
-    width: 72px;
-    border-radius: 18px;
-    backdrop-filter: blur(10px) saturate(125%);
-    background-color: var(--button-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  height: 72px;
+  width: 72px;
+  border-radius: 18px;
+  backdrop-filter: blur(10px) saturate(125%);
+  background-color: var(--button-bg);
 }
 
 .web-item .web-item-bg:hover,
 #btn-setting:hover {
-    background-color: var(--button-hover);
+  background-color: var(--button-hover);
 }
 
 .web-item .web-item-bg img {
-    height: 48px;
-    width: 48px;
+  height: 48px;
+  width: 48px;
 }
 
 .web-item span {
-    margin-top: 4px;
-    text-shadow: -1px -1px 0px #00000055;
+  margin-top: 4px;
+  text-shadow: -1px -1px 0px #00000055;
 }
 
 .web-item:hover .btn-edit {
-    display: flex;
+  display: flex;
 }
 
 .btn-edit {
-    position: absolute;
-    top: -5px;
-    right: 5px;
-    background-color: var(--white);
-    border-radius: 50%;
-    padding: 3px;
-    justify-content: center;
-    align-items: center;
-    display: none;
+  position: absolute;
+  top: -5px;
+  right: 5px;
+  background-color: var(--white);
+  border-radius: 50%;
+  padding: 3px;
+  justify-content: center;
+  align-items: center;
+  display: none;
 }
 
 #btn-setting {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: transparent;
-    border-radius: 10px;
-    padding: 5px;
-    color: var(--white);
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: transparent;
+  border-radius: 10px;
+  padding: 5px;
+  color: var(--white);
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 #btn-search svg,
 #btn-setting svg {
-    fill: var(--white);
+  fill: var(--white);
 }
 
 .btn-clocktype {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-    padding: 20px;
-    height: 165px;
-    border: 2px solid transparent;
-    cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  /* padding: 20px; */
+  height: 165px;
+  border: 2px solid transparent;
+  cursor: pointer;
 }
 
+.btn-clocktype .label {
+  height: 24px;
+  width: 100%;
+  text-align: center;
+}
 .btn-clocktype.selected,
 .btn-clocktype:hover {
-    border: 2px solid var(--accent);
+  border: 2px solid var(--accent);
 }
 
 .btn-clocktype.selected span {
-    color: var(--accent);
+  color: var(--accent);
 }
 
 .btn-clocktype img {
-    height: 80px;
-    width: 80px;
-    margin: 10px 0;
+  height: 80px;
+  width: 80px;
+  margin: 10px 0;
+  border-radius: 8px;
 }
 
 input[type="time"] {
-    background-color: var(--white);
-    padding: 15px 20px;
-    border-radius: 8px;
-    border: none;
+  background-color: var(--white);
+  padding: 5px 15px;
+  border-radius: 8px;
+  border: none;
 }
 
-#time-picker:hover,
-#time-picker:focus {
-    outline: none;
-    background-color: var(--secondary);
+#setting_time-picker:hover,
+#setting_time-picker:focus {
+  outline: none;
+  background-color: var(--button-hover);
 }
 
 .btn-accent {
-    background-color: var(--accent);
-    color: var(--white);
-    border: 1px solid var(--accent);
+  background-color: var(--accent);
+  color: var(--white);
+  border: 1px solid var(--accent);
 }
 
 .btn-accent:hover {
-    background-color: var(--accent-hover);
-    color: var(--white);
+  background-color: var(--accent-hover);
+  color: var(--white);
 }
 
+.btn-text,
 .btn-cancel {
-    background-color: transparent;
-    border: 1px solid transparent;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--accent) !important;
+}
+
+.btn-text:hover span {
+  text-decoration: underline;
 }
 
 #btn-cancel:hover {
-    border: 1px solid var(--accent);
-    color: var(--accent)
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.modal-content {
+  color: var(--white);
+  background: var(--button-hover);
+  backdrop-filter: blur(50px);
+}
+
+.modal-header,
+.modal-footer {
+  border: none;
+}
+
+.modal input[type="text"],
+.modal input[type="time"] {
+  backdrop-filter: blur(10px) saturate(125%);
+  background-color: var(--button-bg);
+  border: none;
+  color: var(--white);
+}
+
+.modal .modal-body label {
+  color: var(--white) !important;
+  background-color: transparent !important;
+}
+
+input::placeholder {
+  color: var(--secondary) !important;
+}
+
+#popup-setting .modal-dialog {
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  margin: 0;
+  right: 0;
+  position: fixed;
+}
+
+#popup-setting.modal.fade:not(.in).right .modal-dialog {
+  -webkit-transform: translate3d(25%, 0, 0);
+  transform: translate3d(25%, 0, 0);
+}
+
+.wallpaper-item {
+  border: 2px solid transparent;
+}
+.wallpaper-item:hover {
+  border: 2px solid var(--accent);
+}
+
+#refresh-icon {
+  display: inline-block;
+  transition: transform 0.5s ease-in-out; /* Smooth transition for the rotation */
+  cursor: pointer; /* Changes the cursor to a pointer when hovering over the icon */
+}
+
+#refresh-icon.rotate {
+  transform: rotate(360deg); /* Rotate the icon by 360 degrees */
 }

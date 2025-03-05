@@ -61,7 +61,7 @@
             <div id="notify" class="notify hide">
                 <p>Go home!</p>
             </div>
-            <form class="search-form" action="https://google.com/search" method="get">
+            <form id="search-form" class="search-form" action="https://google.com/search" method="get">
                 <input class="search-input" placeholder="Search anything..." name="q" />
                 <div id="btn-search">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 24 24">
@@ -82,12 +82,13 @@
             </svg>
         </button>
     </div>
-    <div class="modal fade text-black" id="popup-setting" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal text-black" id="popup-setting" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5">Setting</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex">
                     <div class="w-100 d-flex flex-column rounded-2">
@@ -96,45 +97,67 @@
                             <div class="d-flex flex-row mt-2">
                                 <div class="flex-grow-1 p-2">
                                     <div class="btn-clocktype" id="setting:clock_type-time">
-                                        <span>Clock</span>
+                                        <div class="label">Clock</div>
                                         <img src="./assets/clock.gif">
                                         <input type="time" class="invisible" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 p-2">
                                     <div class="btn-clocktype" id="setting:clock_type-countdown">
-                                        <span>Timer</span>
+                                        <div class="label">Timer</div>
                                         <img src="./assets/hourglass.gif">
-                                        <input type="time" name="input-time" id="setting:time-picker" />
+                                        <input type="time" name="input-time" id="setting_time-picker" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <h2 class="fs-6">Wallpaper</h2>
-                            <div class="d-flex flex-row mt-3 justify-content-between ps-3">
-                                <div class="form-check form-switch">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h2 class="fs-6">Wallpaper</h2>
+                                <button type="button" class="btn btn-text" id="btn-new-wallpaper">
+                                    <span>Get new wallpaper</span>
+                                    <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21"
+                                        height="21" viewBox="0,0,256,256">
+                                        <g fill="#33cccc" fill-rule="nonzero" stroke="none" stroke-width="1"
+                                            stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
+                                            stroke-dasharray="" stroke-dashoffset="0" font-family="none"
+                                            font-weight="none" font-size="none" text-anchor="none"
+                                            style="mix-blend-mode: normal">
+                                            <g transform="scale(8.53333,8.53333)">
+                                                <path
+                                                    d="M15,3c-2.9686,0 -5.69718,1.08344 -7.79297,2.875c-0.28605,0.22772 -0.42503,0.59339 -0.36245,0.95363c0.06258,0.36023 0.31676,0.6576 0.66286,0.77549c0.3461,0.1179 0.72895,0.03753 0.99842,-0.20959c1.74821,-1.49444 4.01074,-2.39453 6.49414,-2.39453c5.19656,0 9.45099,3.93793 9.95117,9h-2.95117l4,6l4,-6h-3.05078c-0.51129,-6.14834 -5.67138,-11 -11.94922,-11zM4,10l-4,6h3.05078c0.51129,6.14834 5.67138,11 11.94922,11c2.9686,0 5.69718,-1.08344 7.79297,-2.875c0.28605,-0.22772 0.42504,-0.59339 0.36245,-0.95363c-0.06258,-0.36023 -0.31676,-0.6576 -0.66286,-0.7755c-0.3461,-0.1179 -0.72895,-0.03753 -0.99842,0.20959c-1.74821,1.49444 -4.01074,2.39453 -6.49414,2.39453c-5.19656,0 -9.45099,-3.93793 -9.95117,-9h2.95117z">
+                                                </path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="d-flex flex-column mt-1 justify-content-between">
+                                <div class="my-2 row row-cols-3" id="list-wallpaper"></div>
+                                <div class="form-check form-switch my-2 ms-2">
                                     <input class="form-check-input" type="checkbox" role="switch"
                                         id="setting:refresh-wallpaper">
                                     <label class="form-check-label" for="setting:refresh-wallpaper">Auto get new
                                         background
                                         daily</label>
-                                    <p class="mb-1 text-black-50">Last update: <span id="update-time"></span></p>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <button type="button" class="btn btn-accent" id="btn-new-wallpaper">Get new
-                                        wallpaper</button>
+                                    <p class="mb-1 text-white-50">Last update: <span id="update-time"></span></p>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-4">
                             <h2 class="fs-6">Links</h2>
-                            <div class="d-flex flex-row mt-3 justify-content-between ps-3">
+                            <div class="d-flex flex-column mt-3 justify-content-between ps-2">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch"
                                         id="setting:open-in-newtab">
                                     <label class="form-check-label" for="setting:open-in-newtab">Open link in new
                                         tab</label>
+                                </div>
+                                <div class="form-check form-switch mt-3">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="setting:open-search-in-newtab">
+                                    <label class="form-check-label" for="setting:open-search-in-newtab">Open search in
+                                        new tab</label>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +165,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-accent" data-bs-dismiss="modal" id="btn-save">Save</button>
-                    <button type="button" class="btn btn-text" data-bs-dismiss="modal" id="btn-cancel">Close</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal"
+                        id="btn-cancel-setting">Close</button>
                 </div>
             </div>
         </div>
@@ -152,25 +176,24 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5">New shortcut</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form class="w-100">
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="shortcut-name" placeholder="Name">
-                            <label for="name">Name</label>
                         </div>
-                        <div class="input-group mb-3">
-                            <div class="form-floating">
-                                <input class="form-control" id="shortcut-url" placeholder="https://">
-                                <label for="url">https://</label>
-                            </div>
+                        <div class="mb-3">
+                            <label for="url" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="shortcut-url" placeholder="https://">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-accent" data-bs-dismiss="modal" id="btn-add">Add</button>
-                    <button type="button" class="btn btn-text" data-bs-dismiss="modal" id="btn-cancel">Close</button>
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal" id="btn-cancel">Close</button>
                 </div>
             </div>
         </div>
@@ -180,19 +203,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5">Edit shortcut</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form class="w-100">
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="edit-shortcut-name" placeholder="Name">
-                            <label for="name">Name</label>
                         </div>
-                        <div class="input-group mb-3">
-                            <div class="form-floating">
-                                <input class="form-control" id="edit-shortcut-url" placeholder="https://">
-                                <label for="url">https://</label>
-                            </div>
+                        <div class="mb-3">
+                            <label for="url" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="edit-shortcut-url" placeholder="https://">
                         </div>
                         <input type="hidden" id="edit-shortcut-oldurl">
                     </form>
@@ -204,7 +226,7 @@
                         <div class="d-flex flex-grow-1 justify-content-end">
                             <button type="button" class="btn btn-accent" data-bs-dismiss="modal" id="btn-edit">Save
                                 change</button>
-                            <button type="button" class="btn btn-text" data-bs-dismiss="modal"
+                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal"
                                 id="btn-cancel">Close</button>
                         </div>
                     </div>

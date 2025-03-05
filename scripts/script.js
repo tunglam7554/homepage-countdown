@@ -1,125 +1,127 @@
-const wallpaperAPI = "https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-US";
-let dev, coundown, targetDate;
+const wallpaperAPI = "https://bing.biturl.top/?resolution=1920&format=json&mkt=en-US";
+let dev, countdown, targetDate;
+
+function copyObj(original) {
+    return JSON.parse(JSON.stringify(original));
+}
 
 let loadedSetting = {
-    isCountdown: JSON.parse(localStorage.getItem('isCountdown')) ?? false,
-    isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? true,
-    isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) ?? true
+    isCountdown: JSON.parse(localStorage.getItem('isCountdown')) ?? null,
+    isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? null,
+    isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) ?? null,
+    listWallpaper: JSON.parse(localStorage.getItem('listWallpaper')) ?? null,
+    isOpenSearchInNewTab: JSON.parse(localStorage.getItem('isOpenSearchInNewTab')) ?? null,
+    currentWallpaper: JSON.parse(localStorage.getItem('currentWallpaper')) ?? null,
 };
 
-let selectedSetting = {
-    isCountdown: loadedSetting.isCountdown,
-    isOpenLinkInNewTab: loadedSetting.isOpenLinkInNewTab,
-    isRefreshWallpaper: loadedSetting.isRefreshWallpaper
-};
+let selectedSetting = copyObj(loadedSetting);
 
 const elements = {
     body: document.getElementById("body"),
     updateTime: document.getElementById("update-time"),
-    timePicker: document.getElementById("setting:time-picker"),
+    timePicker: document.getElementById("setting_time-picker"),
     setting: {
         countdown: document.getElementById("setting:clock_type-countdown"),
         time: document.getElementById("setting:clock_type-time"),
         refreshWallpaper: document.getElementById("setting:refresh-wallpaper"),
         openInNewTab: document.getElementById("setting:open-in-newtab"),
+        openSearchInNewTab: document.getElementById("setting:open-search-in-newtab"),
     },
     webGrid: document.getElementById("web-grid"),
     shortcutName: document.getElementById("shortcut-name"),
     shortcutUrl: document.getElementById("shortcut-url"),
-}
+};
+
 const defaultShortcut = [
-    {
-        icon: "./assets/tulavideo.png",
-        name: "TulaVideo",
-        url: "https://tulavideo.web.app",
-    },
-    {
-        icon: "./assets/tulamusic.png",
-        name: "TulaMusic",
-        url: "https://tulamusic.web.app",
-    },
-    {
-        icon: "./assets/tik-tok.png",
-        name: "TopTop",
-        url: "https://tulavideo.web.app/toptop"
-    }
-]
-initialize();
+    { icon: "./assets/tulavideo.png", name: "TulaVideo", url: "https://tulavideo.web.app" },
+    { icon: "./assets/tulamusic.png", name: "TulaMusic", url: "https://tulamusic.web.app" },
+    { icon: "./assets/tik-tok.png", name: "TopTop", url: "https://tulavideo.web.app/toptop" }
+];
 
 function initialize() {
+    initialSettings();
     loadWallpaper();
     loadDate();
-    addEventListener();
-    loadSetting();
-    loadedSetting.isCountdown ? setCountdown() : setClock();
-    loadShortcut();
+    addEventListeners();
+    loadSettings();
+    applyClockSetting();
+    loadSearchSetting();
+    loadShortcuts();
+    fetchListWallpaper();
 }
 
-function notifyMe() {
-    document.getElementById("notify").classList.remove('hide');
-    document.getElementById("countdown").classList.add('hide');
-
-    if (!("Notification" in window)) {
-        alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "granted") {
-        const notification = new Notification("Go home!");
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then((permission) => {
-            if (permission === "granted") {
-                const notification = new Notification("Go home!");
-            }
-        });
+function initialSettings() {
+    if (loadedSetting.isCountdown == null) {
+        localStorage.setItem('isCountdown', false);
+        loadedSetting.isCountdown = false;
     }
+    if (loadedSetting.isOpenLinkInNewTab == null) {
+        localStorage.setItem('isOpenLinkInNewTab', false);
+        loadedSetting.isOpenLinkInNewTab = false;
+    }
+    if (loadedSetting.isRefreshWallpaper == null) {
+        localStorage.setItem('isRefreshWallpaper', true);
+        loadedSetting.isRefreshWallpaper = true;
+    }
+    if (loadedSetting.listWallpaper == null) {
+        localStorage.setItem('listWallpaper', []);
+        loadedSetting.listWallpaper = [];
+    }
+    if (loadedSetting.isOpenSearchInNewTab == null) {
+        localStorage.setItem('isOpenSearchInNewTab', false);
+        loadedSetting.isOpenSearchInNewTab = false;
+    }
+    selectedSetting = copyObj(loadedSetting);
 }
 
-async function loadWallpaper() {
-    let wallpaper = JSON.parse(localStorage.getItem('wallpaper')) || {};
-    let { url, updatedAt } = wallpaper;
-    if (loadedSetting.isRefreshWallpaper) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (!url || !updatedAt || new Date(updatedAt) < today) {
-            try {
-                const response = await fetch(wallpaperAPI);
-                const data = await response.json();
+function addEventListeners() {
+    //Popup setting
+    const modalSetting = document.getElementById('popup-setting');
+    modalSetting.addEventListener('show.bs.modal', loadSettings);
 
-                elements.body.style.backgroundImage = `url(${data.url})`;
+    elements.setting.time.addEventListener('click', setClockMode);
+    elements.setting.countdown.addEventListener('click', setCountdownMode);
+    document.getElementById('btn-new-wallpaper').addEventListener('click', refreshWallpaper);
+    elements.setting.refreshWallpaper.addEventListener('change', updateRefreshWallpaperSetting);
+    elements.setting.openInNewTab.addEventListener('change', updateOpenLinkInNewTabSetting);
+    elements.setting.openSearchInNewTab.addEventListener('change', updateOpenSearchInNewTabSetting);
+    document.getElementById('btn-save').addEventListener('click', saveSettings);
+    document.getElementById('btn-cancel-setting').addEventListener('click', cancelSetting);
 
-                let updateTime = new Date();
-                localStorage.setItem('wallpaper', JSON.stringify({ url: data.url, updatedAt: updateTime }));
-                elements.updateTime.innerText = updateTime.toLocaleString();
-            } catch (error) {
-                console.error(error);
-                return;
-            }
-        } else {
-            elements.body.style.backgroundImage = `url(${url})`;
-        }
-    } else if (url) {
-        elements.body.style.backgroundImage = `url(${url})`;
+    const popupEdit = document.getElementById('popup-edit');
+    if (popupEdit) {
+        popupEdit.addEventListener('show.bs.modal', loadEditShortcut);
     }
+
+    document.getElementById("btn-edit").addEventListener('click', editShortcut);
+    document.getElementById("btn-remove").addEventListener('click', removeShortcut);
 }
 
-function loadSetting() {
-    //load time update wallpaper
-    const wallpaper = JSON.parse(localStorage.getItem('wallpaper')) || {};
-    const { updatedAt } = wallpaper;
-    if (updatedAt) {
-        elements.updateTime.innerText = (new Date(wallpaper.updatedAt).toLocaleString());
-    }
-    //load timer
+function setClockMode() {
+    selectedSetting.isCountdown = false;
+    elements.timePicker.disabled = true;
+    elements.setting.countdown.classList.remove("selected");
+    elements.setting.time.classList.add("selected");
+}
+
+function setCountdownMode() {
+    selectedSetting.isCountdown = true;
+    elements.timePicker.disabled = false;
+    elements.setting.countdown.classList.add("selected");
+    elements.setting.time.classList.remove("selected");
+}
+
+function loadSettings() {
+    const wallpaper = JSON.parse(localStorage.getItem('currentWallpaper')) || {};
+    elements.updateTime.innerText = wallpaper.updatedAt ? new Date(wallpaper.updatedAt).toLocaleString() : '';
+
     const timer = localStorage.getItem('timer');
     elements.timePicker.value = timer;
-    //load clock type
-    loadedSetting.isCountdown = JSON.parse(localStorage.getItem('isCountdown')) ?? false;
-    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? true;
-    loadedSetting.isRefreshWallpaper = JSON.parse(localStorage.getItem('isRefreshWallpaper')) ?? true;
 
     if (loadedSetting.isCountdown) {
         elements.timePicker.disabled = false;
         elements.setting.countdown.classList.add("selected");
         elements.setting.time.classList.remove("selected");
-
         targetDate = calculateTargetDate(timer);
     } else {
         elements.timePicker.disabled = true;
@@ -128,39 +130,200 @@ function loadSetting() {
     }
 
     elements.setting.openInNewTab.checked = loadedSetting.isOpenLinkInNewTab;
+    elements.setting.openSearchInNewTab.checked = loadedSetting.isOpenSearchInNewTab;
     elements.setting.refreshWallpaper.checked = loadedSetting.isRefreshWallpaper;
-
-    selectedSetting.isCountdown = loadedSetting.isCountdown;
-    selectedSetting.isOpenLinkInNewTab = loadedSetting.isOpenLinkInNewTab;
-    selectedSetting.isRefreshWallpaper = loadedSetting.isRefreshWallpaper;
 }
 
 function calculateTargetDate(timer) {
-    const targetDate = new Date()
+    const targetDate = new Date();
     dev = JSON.parse(localStorage.getItem('dev'));
-    if (dev == true) {
+    if (dev) {
         targetDate.setHours(24, 0, 0, 0);
     } else if (timer) {
-        let timeArray = timer.split(":");
-        targetDate.setHours(timeArray[0], timeArray[1], 0, 0);
+        const [hours, minutes] = timer.split(":").map(Number);
+        targetDate.setHours(hours, minutes, 0, 0);
     } else {
         targetDate.setHours(17, 15, 0, 0);
     }
     return targetDate;
 }
 
-function loadShortcut() {
-    let listShortCut = "";
-    let localShortCut = JSON.parse(localStorage.getItem('shortcut')) ?? [];
-    let shortCut = [...defaultShortcut, ...localShortCut];
-    loadedSetting.isOpenLinkInNewTab = JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? true;
+async function loadWallpaper() {
+    const wallpaper = JSON.parse(localStorage.getItem('currentWallpaper')) || {};
+    const { url, updatedAt } = wallpaper;
 
-    shortCut.forEach(item => {
-        listShortCut += `<div class="web-item"><a href="${item.url}"${loadedSetting.isOpenLinkInNewTab ? 'target="_blank"' : ''}>
+    if (loadedSetting.isRefreshWallpaper) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (!url || !updatedAt || new Date(updatedAt) < today) {
+            fetch(wallpaperAPI)
+                .then(response => response.json())
+                .then(data => {
+                    setWallpaper(data.url);
+                })
+                .catch(error => console.error(error));
+        } else {
+            elements.body.style.backgroundImage = `url(${url})`;
+        }
+    } else if (url) {
+        elements.body.style.backgroundImage = `url(${url})`;
+    }
+}
+
+function setWallpaper(url) {
+    elements.body.style.backgroundImage = `url(${url})`;
+    const updateTime = new Date();
+    localStorage.setItem('currentWallpaper', JSON.stringify({ url, updatedAt: updateTime }));
+    elements.updateTime.innerText = updateTime.toLocaleString();
+}
+
+function cancelSetting() {
+    if (selectedSetting.currentWallpaper.url !== loadedSetting.currentWallpaper.url) {
+        setWallpaper(loadedSetting.currentWallpaper.url);
+    }
+    selectedSetting = copyObj(loadedSetting);
+}
+
+async function fetchListWallpaper() {
+    if (loadedSetting.listWallpaper.length === 0) {
+        for (let index = 0; index < 6; index++) {
+            await fetch(`${wallpaperAPI}&index=${index}`)
+                .then(response => response.json())
+                .then(data => {
+                    let index = loadedSetting.listWallpaper.findIndex(item => item.url === data.url);
+                    if (index === -1) {
+                        const updateTime = new Date();
+                        loadedSetting.listWallpaper.unshift({ url: data.url, updatedAt: updateTime });
+                        localStorage.setItem('listWallpaper', JSON.stringify(loadedSetting.listWallpaper));
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+    }
+
+    let elements = "";
+    loadedSetting.listWallpaper.forEach(el => {
+        elements = elements + `<div class="col p-0 wallpaper-item">
+            <img class="img-fluid" src="${el.url}" onClick="testWallpaper('${el.url}')"/>
+        </div>`;
+    });
+    document.getElementById("list-wallpaper").innerHTML = elements;
+}
+
+function testWallpaper(url) {
+    elements.body.style.backgroundImage = `url(${url})`;
+    selectedSetting.currentWallpaper.url = url;
+}
+
+function refreshWallpaper() {
+    document.getElementById("refresh-icon").classList.toggle("rotate");
+
+    loadedSetting.listWallpaper = [];
+    localStorage.setItem('listWallpaper', JSON.stringify(loadedSetting.listWallpaper));
+    fetchListWallpaper();
+    localStorage.removeItem('currentWallpaper');
+    loadWallpaper();
+}
+
+function updateRefreshWallpaperSetting() {
+    selectedSetting.isRefreshWallpaper = elements.setting.refreshWallpaper.checked;
+}
+
+function updateOpenLinkInNewTabSetting() {
+    selectedSetting.isOpenLinkInNewTab = elements.setting.openInNewTab.checked;
+}
+
+function updateOpenSearchInNewTabSetting() {
+    selectedSetting.isOpenSearchInNewTab = elements.setting.openSearchInNewTab.checked;
+}
+
+function saveSettings() {
+    if (selectedSetting.isRefreshWallpaper !== loadedSetting.isRefreshWallpaper) {
+        loadedSetting.isRefreshWallpaper = selectedSetting.isRefreshWallpaper;
+
+        localStorage.setItem('isRefreshWallpaper', selectedSetting.isRefreshWallpaper);
+        if (selectedSetting.isRefreshWallpaper) {
+            localStorage.removeItem('currentWallpaper');
+            loadWallpaper();
+        }
+    }
+
+    if (selectedSetting.isOpenLinkInNewTab !== loadedSetting.isOpenLinkInNewTab) {
+        loadedSetting.isOpenLinkInNewTab = selectedSetting.isOpenLinkInNewTab;
+        localStorage.setItem('isOpenLinkInNewTab', selectedSetting.isOpenLinkInNewTab);
+        loadShortcuts();
+    }
+
+    if (selectedSetting.isOpenSearchInNewTab !== loadedSetting.isOpenSearchInNewTab) {
+        loadedSetting.isOpenSearchInNewTab = selectedSetting.isOpenSearchInNewTab;
+        localStorage.setItem('isOpenSearchInNewTab', selectedSetting.isOpenSearchInNewTab);
+        loadSearchSetting();
+    }
+
+    if (selectedSetting.currentWallpaper.url != loadedSetting.currentWallpaper.url) {
+        loadedSetting.currentWallpaper.url = selectedSetting.currentWallpaper.url;
+        loadedSetting.currentWallpaper.updatedAt = new Date();
+        setWallpaper(selectedSetting.currentWallpaper.url);
+    }
+
+    if (selectedSetting.isCountdown !== loadedSetting.isCountdown) {
+        loadedSetting.isCountdown = selectedSetting.isCountdown;
+        if (selectedSetting.isCountdown) {
+            const timer = elements.timePicker.value;
+            if (!timer) {
+                alert("You must set time for the timer!");
+                return;
+            }
+            localStorage.setItem('timer', timer);
+            localStorage.setItem('isCountdown', true);
+            cancelAnimationFrame(countdown);
+            loadSettings();
+            setCountdown();
+        } else {
+            localStorage.setItem('isCountdown', false);
+            cancelAnimationFrame(countdown);
+            loadSettings();
+            setClock();
+        }
+    }
+}
+
+function applyClockSetting() {
+    if (loadedSetting.isCountdown) {
+        setCountdown();
+    } else {
+        setClock();
+    }
+}
+
+function loadSearchSetting() {
+    if (loadedSetting.isOpenSearchInNewTab) {
+        document.getElementById('search-form').setAttribute('target', "_blank");
+    } else {
+        document.getElementById('search-form').setAttribute('target', "_self");
+    }
+}
+
+function loadDate() {
+    const date = new Date();
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+
+    document.getElementById("month").innerHTML = `${day} ${date.toLocaleString("default", { month: "long" })}`;
+    document.getElementById("year").innerHTML = year;
+}
+
+function loadShortcuts() {
+    const localShortcuts = JSON.parse(localStorage.getItem('shortcut')) ?? [];
+    const shortcuts = [...defaultShortcut, ...localShortcuts];
+    let listShortcuts = "";
+
+    shortcuts.forEach(item => {
+        listShortcuts += `<div class="web-item"><a href="${item.url}"${loadedSetting.isOpenLinkInNewTab ? ' target="_blank"' : ''}>
                 <div class="web-item-bg">
                     <img src="${item.icon}" />
                 </div>
-                <span>${item.name}</span>          
+                <span>${item.name}</span>
             </a>
             <div class="btn-edit" data-bs-toggle="modal" data-bs-target="#popup-edit" data-bs-name="${item.name}" data-bs-url="${item.url}">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 24 24">
@@ -169,242 +332,158 @@ function loadShortcut() {
             </div></div>`;
     });
 
-    listShortCut += `<div class="web-item" data-bs-toggle="modal" data-bs-target="#popup-add">
+    listShortcuts += `<div class="web-item" data-bs-toggle="modal" data-bs-target="#popup-add">
         <div class="web-item-bg">
-            <img src="./assets/add.png" style="height: 24px;width: 24px;" />
+            <img src="./assets/add.png" style="height: 24px; width: 24px;" />
         </div>
     </div>`;
 
-    elements.webGrid.innerHTML = listShortCut;
+    elements.webGrid.innerHTML = listShortcuts;
 
     document.getElementById('btn-add').addEventListener('click', function () {
         const name = elements.shortcutName.value;
         const url = elements.shortcutUrl.value;
         if (name && url) {
-            const newShortCut = {
+            const newShortcut = {
                 url: `https://${url}`,
-                name: name,
+                name,
                 icon: `https://www.google.com/s2/favicons?domain=${url}&sz=48`
             };
 
-            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) ?? [];
-            let listShortCut = [...defaultShortcut, ...localShortCut];
-
-            if (!listShortCut.some(item => item.url == newShortCut.url)) {
-                localShortCut.push(newShortCut);
-                localStorage.setItem('shortcut', JSON.stringify(localShortCut));
-                loadShortcut();
+            let localShortcuts = JSON.parse(localStorage.getItem('shortcut')) ?? [];
+            if (!localShortcuts.some(item => item.url === newShortcut.url)) {
+                localShortcuts.push(newShortcut);
+                localStorage.setItem('shortcut', JSON.stringify(localShortcuts));
+                loadShortcuts();
             } else {
-                alert("This website already added!");
+                alert("This website is already added!");
             }
+
             elements.shortcutName.value = "";
             elements.shortcutUrl.value = "";
         }
     });
 }
 
-function addEventListener() {
-    //Popup setting
-    const modalSetting = document.getElementById('popup-setting');
-    modalSetting.addEventListener('show.bs.modal', loadSetting);
-    //Add event select clock setting
-    elements.setting.time.addEventListener('click', function () {
-        selectedSetting.isCountdown = false;
-        elements.timePicker.disabled = true;
-        elements.setting.countdown.classList.remove("selected");
-        elements.setting.time.classList.add("selected");
-    });
-    //Add event select countdown setting
-    elements.setting.countdown.addEventListener('click', function () {
-        selectedSetting.isCountdown = true;
-        elements.timePicker.disabled = false;
-        elements.setting.countdown.classList.add("selected");
-        elements.setting.time.classList.remove("selected");
-    });
-    //Add event get new wallpaper
-    document.getElementById('btn-new-wallpaper').addEventListener('click', function () {
-        localStorage.removeItem('wallpaper');
-        loadWallpaper();
-    });
-    //Add event select refresh wallpaper setting
-    elements.setting.refreshWallpaper.addEventListener('change', function () {
-        selectedSetting.isRefreshWallpaper = elements.setting.refreshWallpaper.checked;
-    });
-    //Add event select open link in new tab setting
-    elements.setting.openInNewTab.addEventListener('change', function () {
-        selectedSetting.isOpenLinkInNewTab = elements.setting.openInNewTab.checked;
-    });
-    //Add event save setting
-    document.getElementById('btn-save').addEventListener('click', function () {
-        if (selectedSetting.isRefreshWallpaper != loadedSetting.isRefreshWallpaper) {
-            localStorage.setItem('isRefreshWallpaper', selectedSetting.isRefreshWallpaper);
-            if (selectedSetting.isRefreshWallpaper) {
-                localStorage.removeItem('wallpaper');
-                loadWallpaper();
-            }
-        }
-
-        if (selectedSetting.isOpenLinkInNewTab != loadedSetting.isOpenLinkInNewTab) {
-            localStorage.setItem('isOpenLinkInNewTab', selectedSetting.isOpenLinkInNewTab);
-            loadShortcut();
-        }
-
-        if (selectedSetting.isCountdown != loadedSetting.isCountdown) {
-            if (selectedSetting.isCountdown) {
-                const timer = elements.timePicker.value;
-                if (!timer) {
-                    alert("You must set time for timer!");
-                    return;
-                }
-
-                localStorage.setItem('timer', timer);
-                localStorage.setItem('isCountdown', true);
-                cancelAnimationFrame(coundown);
-                loadSetting();
-                setCountdown();
-            } else {
-                localStorage.setItem('isCountdown', false);
-                cancelAnimationFrame(coundown);
-                loadSetting();
-                setClock();
-            }
-        }
-    });
-    //Load edit shortcut
+function loadEditShortcut(event) {
+    const button = event.relatedTarget;
+    const name = button.getAttribute('data-bs-name');
+    const url = button.getAttribute('data-bs-url');
     const popupEdit = document.getElementById('popup-edit');
-    if (popupEdit) {
-        popupEdit.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget
-            const name = button.getAttribute('data-bs-name');
-            const url = button.getAttribute('data-bs-url');
-            popupEdit.querySelector('#edit-shortcut-name').value = name;
-            popupEdit.querySelector('#edit-shortcut-url').value = url.replace('https://', '');
-            popupEdit.querySelector('#edit-shortcut-oldurl').value = url;
 
-            let index = defaultShortcut.findIndex(item => item.url.includes(url));
-            if (index == -1) {
-                document.getElementById('btn-edit').classList.add('d-flex');
-                document.getElementById('btn-edit').classList.remove('d-none');
-                document.getElementById('btn-remove').classList.add('d-flex');
-                document.getElementById('btn-remove').classList.remove('d-none');
-                popupEdit.querySelector('#edit-shortcut-name').disabled = false;
-                popupEdit.querySelector('#edit-shortcut-url').disabled = false;
-            } else {
-                document.getElementById('btn-edit').classList.remove('d-flex');
-                document.getElementById('btn-edit').classList.add('d-none');
-                document.getElementById('btn-remove').classList.remove('d-flex');
-                document.getElementById('btn-remove').classList.add('d-none');
-                popupEdit.querySelector('#edit-shortcut-name').disabled = true;
-                popupEdit.querySelector('#edit-shortcut-url').disabled = true;
-            }
-        });
-    }
+    popupEdit.querySelector('#edit-shortcut-name').value = name;
+    popupEdit.querySelector('#edit-shortcut-url').value = url.replace('https://', '');
+    popupEdit.querySelector('#edit-shortcut-oldurl').value = url;
 
-    document.getElementById("btn-edit").addEventListener('click', function () {
-        const oldUrl = document.getElementById('edit-shortcut-oldurl').value;
-        const url = document.getElementById('edit-shortcut-url').value;
-        const name = document.getElementById('edit-shortcut-name').value;
-        if (oldUrl && url && name) {
-            let isEditDefaultShortcut = defaultShortcut.some(item => item.url === oldUrl);
-            if (isEditDefaultShortcut) return;
-
-            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
-            let index = localShortCut.findIndex(item => item.url === oldUrl);
-            if (index != -1) {
-                localShortCut[index].name = name;
-                localShortCut[index].url = `https://${url}`;
-                localShortCut[index].icon = `https://www.google.com/s2/favicons?domain=${url}&sz=48`;
-
-                localStorage.setItem('shortcut', JSON.stringify(localShortCut));
-                document.getElementById('edit-shortcut-oldurl').value = "";
-                document.getElementById('edit-shortcut-url').value = "";
-                document.getElementById('edit-shortcut-name').value = "";
-                loadShortcut();
-            }
-        }
-    });
-
-    document.getElementById("btn-remove").addEventListener('click', function () {
-        const oldUrl = document.getElementById('edit-shortcut-oldurl').value;
-        if (oldUrl) {
-            let isEditDefaultShortcut = defaultShortcut.some(item => item.url === oldUrl);
-            if (isEditDefaultShortcut) return;
-
-            let localShortCut = JSON.parse(localStorage.getItem('shortcut')) || [];
-            localShortCut = localShortCut.filter(item => item.url !== oldUrl);
-            localStorage.setItem('shortcut', JSON.stringify(localShortCut));
-
-            document.getElementById('edit-shortcut-oldurl').value = "";
-            document.getElementById('edit-shortcut-url').value = "";
-            document.getElementById('edit-shortcut-name').value = "";
-            loadShortcut();
-        }
-    });
+    const isDefaultShortcut = defaultShortcut.some(item => item.url === url);
+    toggleEditButtons(!isDefaultShortcut);
 }
 
-function loadDate() {
-    const date = new Date();
-    let day = date.getDate();
-    day = day < 10 ? "0" + day : day;
-    const year = date.getFullYear();
+function toggleEditButtons(show) {
+    document.getElementById('btn-edit').classList.toggle('d-flex', show);
+    document.getElementById('btn-edit').classList.toggle('d-none', !show);
+    document.getElementById('btn-remove').classList.toggle('d-flex', show);
+    document.getElementById('btn-remove').classList.toggle('d-none', !show);
+}
 
-    document.getElementById("month").innerHTML = `${day} ${date.toLocaleString("default", { month: "long" })}`;
-    document.getElementById("year").innerHTML = year;
+function editShortcut() {
+    const oldUrl = document.getElementById('edit-shortcut-oldurl').value;
+    const url = document.getElementById('edit-shortcut-url').value;
+    const name = document.getElementById('edit-shortcut-name').value;
+
+    if (oldUrl && url && name) {
+        let localShortcuts = JSON.parse(localStorage.getItem('shortcut')) || [];
+        const index = localShortcuts.findIndex(item => item.url === oldUrl);
+
+        if (index !== -1) {
+            localShortcuts[index] = {
+                name,
+                url: `https://${url}`,
+                icon: `https://www.google.com/s2/favicons?domain=${url}&sz=48`
+            };
+
+            localStorage.setItem('shortcut', JSON.stringify(localShortcuts));
+            loadShortcuts();
+        }
+    }
+}
+
+function removeShortcut() {
+    const oldUrl = document.getElementById('edit-shortcut-oldurl').value;
+    let localShortcuts = JSON.parse(localStorage.getItem('shortcut')) || [];
+    localShortcuts = localShortcuts.filter(item => item.url !== oldUrl);
+
+    localStorage.setItem('shortcut', JSON.stringify(localShortcuts));
+    loadShortcuts();
+}
+
+function notifyMe() {
+    document.getElementById("notify").classList.remove('hide');
+    document.getElementById("countdown").classList.add('hide');
+
+    if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+            new Notification("Go home!");
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("Go home!");
+                }
+            });
+        }
+    } else {
+        alert("This browser does not support desktop notification");
+    }
 }
 
 function flipContainers(className, value) {
     const elements = document.getElementsByClassName(className);
-    let oldValue = value;
-    for (let index = 0; index < elements.length; index++) {
-        oldValue = elements[index].innerText;
-        elements[index].innerText =
-            value < 10 ? "0" + value.toString() : value.toString();
+    for (let element of elements) {
+        const oldValue = element.innerText;
+        element.innerText = value < 10 ? "0" + value : value.toString();
+        if (oldValue != value) {
+            document.getElementById(className + "Flip").classList.toggle("flipped");
+        }
     }
-    if (oldValue != value) {
-        document.getElementById(className + "Flip").classList.toggle("flipped");
+}
+
+function updateFlip(callback) {
+    const now = new Date();
+    const timeRemaining = targetDate - now;
+    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+    flipContainers("hours", hours);
+    flipContainers("minutes", minutes);
+    flipContainers("seconds", seconds);
+
+    if (timeRemaining > 0) {
+        countdown = requestAnimationFrame(callback);
+    } else {
+        notifyMe();
     }
 }
 
 function setCountdown() {
     document.getElementById("notify").classList.add('hide');
     document.getElementById("countdown").classList.remove('hide');
-    function updateFlip() {
-        const now = new Date();
-        const timeRemaining = targetDate - now;
-        const hours = Math.floor(
-            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor(
-            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-        flipContainers("hours", hours);
-        flipContainers("minutes", minutes);
-        flipContainers("seconds", seconds);
-
-        if (timeRemaining > 0) {
-            coundown = requestAnimationFrame(updateFlip);
-        } else {
-            notifyMe();
-        }
-    }
-    coundown = requestAnimationFrame(updateFlip);
+    countdown = requestAnimationFrame(() => updateFlip(setCountdown));
 }
 
 function setClock() {
+    function updateClock() {
+        const now = new Date();
+        flipContainers("hours", now.getHours());
+        flipContainers("minutes", now.getMinutes());
+        flipContainers("seconds", now.getSeconds());
+
+        countdown = requestAnimationFrame(updateClock);
+    }
+
     document.getElementById("notify").classList.add('hide');
     document.getElementById("countdown").classList.remove('hide');
-    function updateFlip() {
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
-
-        flipContainers("hours", hours);
-        flipContainers("minutes", minutes);
-        flipContainers("seconds", seconds);
-        coundown = requestAnimationFrame(updateFlip);
-    }
-    coundown = requestAnimationFrame(updateFlip);
+    countdown = requestAnimationFrame(updateClock);
 }
+
+initialize();
