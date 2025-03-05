@@ -243,6 +243,14 @@ body {
   gap: 10px;
 }
 
+.top-sites-grid {
+  display: grid;
+  flex-direction: row;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 0px;
+}
+
 .web-item {
   height: 97px;
   width: 92px;
@@ -275,6 +283,13 @@ body {
 .web-item .web-item-bg:hover,
 #btn-setting:hover {
   background-color: var(--button-hover);
+}
+
+.top-sites-grid .web-item .web-item-bg {
+  border: 1px solid transparent;
+}
+.top-sites-grid .web-item .web-item-bg:hover {
+  border: 1px solid var(--accent);
 }
 
 .web-item .web-item-bg img {
@@ -345,8 +360,10 @@ body {
   border: 2px solid var(--accent);
 }
 
-.btn-clocktype.selected span {
-  color: var(--accent);
+.btn-clocktype.selected span,
+.nav-tab.active,
+.nav-tab:hover {
+  color: var(--accent) !important;
 }
 
 .btn-clocktype img {
@@ -453,4 +470,15 @@ input::placeholder {
 
 #refresh-icon.rotate {
   transform: rotate(360deg); /* Rotate the icon by 360 degrees */
+}
+
+.nav-tab {
+  background-color: transparent;
+  color: var(--white);
+  border-radius: 0 !important;
+}
+
+.nav-tab.active {
+  border-bottom: 2px solid var(--accent);
+  background-color: transparent !important;
 }

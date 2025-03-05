@@ -38,6 +38,14 @@ const defaultShortcut = [
     { icon: "./assets/tik-tok.png", name: "TopTop", url: "https://tulavideo.web.app/toptop" }
 ];
 
+var topSites = [
+    { icon: "", name: "Google", url: "https://google.com" },
+    { icon: "", name: "Youtube", url: "https://youtube.com" },
+    { icon: "", name: "Facebook", url: "https://facebook.com" },
+    { icon: "", name: "Instagram", url: "https://instagram.com" }
+
+];
+
 function initialize() {
     initialSettings();
     loadWallpaper();
@@ -48,6 +56,7 @@ function initialize() {
     loadSearchSetting();
     loadShortcuts();
     fetchListWallpaper();
+    loadTopSite();
 }
 
 function initialSettings() {
@@ -95,6 +104,13 @@ function addEventListeners() {
 
     document.getElementById("btn-edit").addEventListener('click', editShortcut);
     document.getElementById("btn-remove").addEventListener('click', removeShortcut);
+
+    document.getElementById('btn-add').addEventListener('click', addShortCut);
+
+    document.getElementById("ns-custom-site-tab").addEventListener('click', function () {
+        elements.shortcutName.value = "";
+        elements.shortcutUrl.value = "";
+    });
 }
 
 function setClockMode() {
@@ -340,30 +356,27 @@ function loadShortcuts() {
 
     elements.webGrid.innerHTML = listShortcuts;
 
-    document.getElementById('btn-add').addEventListener('click', function () {
-        const name = elements.shortcutName.value;
-        const url = elements.shortcutUrl.value;
-        if (name && url) {
-            const newShortcut = {
-                url: `https://${url}`,
-                name,
-                icon: `https://www.google.com/s2/favicons?domain=${url}&sz=48`
-            };
 
-            let localShortcuts = JSON.parse(localStorage.getItem('shortcut')) ?? [];
-            if (!localShortcuts.some(item => item.url === newShortcut.url)) {
-                localShortcuts.push(newShortcut);
-                localStorage.setItem('shortcut', JSON.stringify(localShortcuts));
-                loadShortcuts();
-            } else {
-                alert("This website is already added!");
-            }
-
-            elements.shortcutName.value = "";
-            elements.shortcutUrl.value = "";
-        }
-    });
 }
+
+function loadTopSite() {
+    topSites.forEach(site => {
+        site.icon = `https://www.google.com/s2/favicons?domain=${site.url}&sz=48`;
+    })
+
+    let listTopSite = "";
+    topSites.forEach(item => {
+        listTopSite += `<div class="web-item" onClick="addTopSite('${item.name}','${item.url}')">
+                <div class="web-item-bg">
+                    <img src="${item.icon}" />
+                </div>
+                <span>${item.name}</span>
+            </div>`;
+    });
+
+    document.getElementById('top-sites-list').innerHTML = listTopSite;
+}
+
 
 function loadEditShortcut(event) {
     const button = event.relatedTarget;
@@ -384,6 +397,35 @@ function toggleEditButtons(show) {
     document.getElementById('btn-edit').classList.toggle('d-none', !show);
     document.getElementById('btn-remove').classList.toggle('d-flex', show);
     document.getElementById('btn-remove').classList.toggle('d-none', !show);
+}
+
+function addShortCut() {
+    const name = elements.shortcutName.value;
+    const url = elements.shortcutUrl.value;
+    if (name && url) {
+        const newShortcut = {
+            url: `https://${url}`,
+            name,
+            icon: `https://www.google.com/s2/favicons?domain=${url}&sz=48`
+        };
+
+        let localShortcuts = JSON.parse(localStorage.getItem('shortcut')) ?? [];
+        if (!localShortcuts.some(item => item.url === newShortcut.url)) {
+            localShortcuts.push(newShortcut);
+            localStorage.setItem('shortcut', JSON.stringify(localShortcuts));
+            loadShortcuts();
+        } else {
+            alert("This website is already added!");
+        }
+
+        elements.shortcutName.value = "";
+        elements.shortcutUrl.value = "";
+    }
+}
+
+function addTopSite(name, url) {
+    elements.shortcutName.value = name;
+    elements.shortcutUrl.value = url;
 }
 
 function editShortcut() {
