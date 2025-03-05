@@ -367,7 +367,7 @@ function loadTopSite() {
 
     let listTopSite = "";
     topSites.forEach(item => {
-        listTopSite += `<div class="web-item" onClick="addTopSite('${item.name}','${item.url}')">
+        listTopSite += `<div class="web-item${elements.shortcutUrl.value == item.url ? ' active' : ''}" onClick="addTopSite('${item.name}','${item.url}')">
                 <div class="web-item-bg">
                     <img src="${item.icon}" />
                 </div>
@@ -427,6 +427,7 @@ function addShortCut() {
 function addTopSite(name, url) {
     elements.shortcutName.value = name;
     elements.shortcutUrl.value = url;
+    loadTopSite();
 }
 
 function editShortcut() {

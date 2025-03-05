@@ -288,6 +288,8 @@ body {
 .top-sites-grid .web-item .web-item-bg {
   border: 1px solid transparent;
 }
+
+.top-sites-grid .web-item.active .web-item-bg,
 .top-sites-grid .web-item .web-item-bg:hover {
   border: 1px solid var(--accent);
 }
