@@ -57,7 +57,6 @@ function initialize() {
     loadSearchSetting();
     loadShortcuts();
     fetchListWallpaper();
-    loadTopSite();
 }
 
 function initialSettings() {
@@ -98,6 +97,11 @@ function addEventListeners() {
     document.getElementById('btn-save').addEventListener('click', saveSettings);
     document.getElementById('btn-cancel-setting').addEventListener('click', cancelSetting);
 
+    const popupAdd = document.getElementById('popup-add');
+    if (popupAdd) {
+        popupAdd.addEventListener('show.bs.modal', loadTopSite);
+    }
+
     const popupEdit = document.getElementById('popup-edit');
     if (popupEdit) {
         popupEdit.addEventListener('show.bs.modal', loadEditShortcut);
@@ -112,6 +116,9 @@ function addEventListeners() {
         elements.shortcutName.value = "";
         elements.shortcutUrl.value = "";
     });
+
+    document.getElementById("ns-top-sites-tab").addEventListener('click', loadTopSite);
+
 }
 
 function setClockMode() {
@@ -361,12 +368,15 @@ function loadShortcuts() {
 }
 
 function loadTopSite() {
-    topSites.forEach(site => {
+    let localShortcuts = JSON.parse(localStorage.getItem('shortcut')) ?? [];
+    let filteredTopSites = topSites.filter(site => !localShortcuts.some(i => i.url === site.url));
+
+    filteredTopSites.forEach(site => {
         site.icon = `https://www.google.com/s2/favicons?domain=${site.url}&sz=48`;
     })
 
     let listTopSite = "";
-    topSites.forEach(item => {
+    filteredTopSites.forEach(item => {
         listTopSite += `<div class="web-item${elements.shortcutUrl.value == item.url ? ' active' : ''}" onClick="addTopSite('${item.name}','${item.url}')">
                 <div class="web-item-bg">
                     <img src="${item.icon}" />
@@ -402,7 +412,7 @@ function toggleEditButtons(show) {
 
 function addShortCut() {
     const name = elements.shortcutName.value;
-    const url = elements.shortcutUrl.value;
+    const url = elements.shortcutUrl.value.replace(/^https?:\/\//, '');
     if (name && url) {
         const newShortcut = {
             url: `https://${url}`,
