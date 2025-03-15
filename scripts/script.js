@@ -5,7 +5,7 @@ function copyObj(original) {
     return JSON.parse(JSON.stringify(original));
 }
 
-let loadedSetting = {
+let loadedSettings = {
     isCountdown: JSON.parse(localStorage.getItem('isCountdown')) ?? null,
     isOpenLinkInNewTab: JSON.parse(localStorage.getItem('isOpenLinkInNewTab')) ?? null,
     isRefreshWallpaper: JSON.parse(localStorage.getItem('isRefreshWallpaper')) ?? null,
@@ -14,7 +14,7 @@ let loadedSetting = {
     currentWallpaper: JSON.parse(localStorage.getItem('currentWallpaper')) ?? null,
 };
 
-let selectedSetting = copyObj(loadedSetting);
+let selectedSetting = copyObj(loadedSettings);
 
 const elements = {
     body: document.getElementById("body"),
@@ -60,27 +60,35 @@ function initialize() {
 }
 
 function initialSettings() {
-    if (loadedSetting.isCountdown == null) {
+    if (loadedSettings.isCountdown == null) {
         localStorage.setItem('isCountdown', false);
-        loadedSetting.isCountdown = false;
+        loadedSettings.isCountdown = false;
     }
-    if (loadedSetting.isOpenLinkInNewTab == null) {
+    if (loadedSettings.isOpenLinkInNewTab == null) {
         localStorage.setItem('isOpenLinkInNewTab', false);
-        loadedSetting.isOpenLinkInNewTab = false;
+        loadedSettings.isOpenLinkInNewTab = false;
     }
-    if (loadedSetting.isRefreshWallpaper == null) {
+    if (loadedSettings.isRefreshWallpaper == null) {
         localStorage.setItem('isRefreshWallpaper', true);
-        loadedSetting.isRefreshWallpaper = true;
+        loadedSettings.isRefreshWallpaper = true;
     }
-    if (loadedSetting.listWallpaper == null) {
+    if (loadedSettings.listWallpaper == null) {
         localStorage.setItem('listWallpaper', []);
-        loadedSetting.listWallpaper = [];
+        loadedSettings.listWallpaper = [];
     }
-    if (loadedSetting.isOpenSearchInNewTab == null) {
+    if (loadedSettings.isOpenSearchInNewTab == null) {
         localStorage.setItem('isOpenSearchInNewTab', false);
-        loadedSetting.isOpenSearchInNewTab = false;
+        loadedSettings.isOpenSearchInNewTab = false;
     }
-    selectedSetting = copyObj(loadedSetting);
+    if (loadedSettings.currentWallpaper == null) {
+        let currentWallpaper =  {
+            url:"",
+            updatedAt: null
+        };
+        localStorage.setItem('currentWallpaper', JSON.stringify(currentWallpaper));
+        loadedSettings.currentWallpaper = currentWallpaper;
+    }
+    selectedSetting = copyObj(loadedSettings);
 }
 
 function addEventListeners() {
@@ -142,7 +150,7 @@ function loadSettings() {
     const timer = localStorage.getItem('timer');
     elements.timePicker.value = timer;
 
-    if (loadedSetting.isCountdown) {
+    if (loadedSettings.isCountdown) {
         elements.timePicker.disabled = false;
         elements.setting.countdown.classList.add("selected");
         elements.setting.time.classList.remove("selected");
@@ -153,9 +161,9 @@ function loadSettings() {
         elements.setting.time.classList.add("selected");
     }
 
-    elements.setting.openInNewTab.checked = loadedSetting.isOpenLinkInNewTab;
-    elements.setting.openSearchInNewTab.checked = loadedSetting.isOpenSearchInNewTab;
-    elements.setting.refreshWallpaper.checked = loadedSetting.isRefreshWallpaper;
+    elements.setting.openInNewTab.checked = loadedSettings.isOpenLinkInNewTab;
+    elements.setting.openSearchInNewTab.checked = loadedSettings.isOpenSearchInNewTab;
+    elements.setting.refreshWallpaper.checked = loadedSettings.isRefreshWallpaper;
 }
 
 function calculateTargetDate(timer) {
@@ -176,7 +184,7 @@ async function loadWallpaper() {
     const wallpaper = JSON.parse(localStorage.getItem('currentWallpaper')) || {};
     const { url, updatedAt } = wallpaper;
 
-    if (loadedSetting.isRefreshWallpaper) {
+    if (loadedSettings.isRefreshWallpaper) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         if (!url || !updatedAt || new Date(updatedAt) < today) {
@@ -197,28 +205,29 @@ async function loadWallpaper() {
 function setWallpaper(url) {
     elements.body.style.backgroundImage = `url(${url})`;
     const updateTime = new Date();
+    loadedSettings.currentWallpaper = { url, updatedAt: updateTime };
     localStorage.setItem('currentWallpaper', JSON.stringify({ url, updatedAt: updateTime }));
     elements.updateTime.innerText = updateTime.toLocaleString();
 }
 
 function cancelSetting() {
-    if (selectedSetting.currentWallpaper.url !== loadedSetting.currentWallpaper.url) {
-        setWallpaper(loadedSetting.currentWallpaper.url);
+    if (selectedSetting.currentWallpaper.url !== loadedSettings.currentWallpaper.url) {
+        setWallpaper(loadedSettings.currentWallpaper.url);
     }
-    selectedSetting = copyObj(loadedSetting);
+    selectedSetting = copyObj(loadedSettings);
 }
 
 async function fetchListWallpaper() {
-    if (loadedSetting.listWallpaper.length === 0) {
+    if (loadedSettings.listWallpaper.length === 0) {
         for (let index = 0; index < 6; index++) {
             await fetch(`${wallpaperAPI}&index=${index}`)
                 .then(response => response.json())
                 .then(data => {
-                    let index = loadedSetting.listWallpaper.findIndex(item => item.url === data.url);
+                    let index = loadedSettings.listWallpaper.findIndex(item => item.url === data.url);
                     if (index === -1) {
                         const updateTime = new Date();
-                        loadedSetting.listWallpaper.unshift({ url: data.url, updatedAt: updateTime });
-                        localStorage.setItem('listWallpaper', JSON.stringify(loadedSetting.listWallpaper));
+                        loadedSettings.listWallpaper.unshift({ url: data.url, updatedAt: updateTime });
+                        localStorage.setItem('listWallpaper', JSON.stringify(loadedSettings.listWallpaper));
                     }
                 })
                 .catch(error => console.error(error));
@@ -226,7 +235,7 @@ async function fetchListWallpaper() {
     }
 
     let elements = "";
-    loadedSetting.listWallpaper.forEach(el => {
+    loadedSettings.listWallpaper.forEach(el => {
         elements = elements + `<div class="col p-0 wallpaper-item">
             <img class="img-fluid" src="${el.url}" onClick="testWallpaper('${el.url}')"/>
         </div>`;
@@ -242,8 +251,8 @@ function testWallpaper(url) {
 function refreshWallpaper() {
     document.getElementById("refresh-icon").classList.toggle("rotate");
 
-    loadedSetting.listWallpaper = [];
-    localStorage.setItem('listWallpaper', JSON.stringify(loadedSetting.listWallpaper));
+    loadedSettings.listWallpaper = [];
+    localStorage.setItem('listWallpaper', JSON.stringify(loadedSettings.listWallpaper));
     fetchListWallpaper();
     localStorage.removeItem('currentWallpaper');
     loadWallpaper();
@@ -262,8 +271,8 @@ function updateOpenSearchInNewTabSetting() {
 }
 
 function saveSettings() {
-    if (selectedSetting.isRefreshWallpaper !== loadedSetting.isRefreshWallpaper) {
-        loadedSetting.isRefreshWallpaper = selectedSetting.isRefreshWallpaper;
+    if (selectedSetting.isRefreshWallpaper !== loadedSettings.isRefreshWallpaper) {
+        loadedSettings.isRefreshWallpaper = selectedSetting.isRefreshWallpaper;
 
         localStorage.setItem('isRefreshWallpaper', selectedSetting.isRefreshWallpaper);
         if (selectedSetting.isRefreshWallpaper) {
@@ -272,26 +281,26 @@ function saveSettings() {
         }
     }
 
-    if (selectedSetting.isOpenLinkInNewTab !== loadedSetting.isOpenLinkInNewTab) {
-        loadedSetting.isOpenLinkInNewTab = selectedSetting.isOpenLinkInNewTab;
+    if (selectedSetting.isOpenLinkInNewTab !== loadedSettings.isOpenLinkInNewTab) {
+        loadedSettings.isOpenLinkInNewTab = selectedSetting.isOpenLinkInNewTab;
         localStorage.setItem('isOpenLinkInNewTab', selectedSetting.isOpenLinkInNewTab);
         loadShortcuts();
     }
 
-    if (selectedSetting.isOpenSearchInNewTab !== loadedSetting.isOpenSearchInNewTab) {
-        loadedSetting.isOpenSearchInNewTab = selectedSetting.isOpenSearchInNewTab;
+    if (selectedSetting.isOpenSearchInNewTab !== loadedSettings.isOpenSearchInNewTab) {
+        loadedSettings.isOpenSearchInNewTab = selectedSetting.isOpenSearchInNewTab;
         localStorage.setItem('isOpenSearchInNewTab', selectedSetting.isOpenSearchInNewTab);
         loadSearchSetting();
     }
 
-    if (selectedSetting.currentWallpaper.url != loadedSetting.currentWallpaper.url) {
-        loadedSetting.currentWallpaper.url = selectedSetting.currentWallpaper.url;
-        loadedSetting.currentWallpaper.updatedAt = new Date();
+    if (selectedSetting.currentWallpaper.url != loadedSettings.currentWallpaper.url) {
+        loadedSettings.currentWallpaper.url = selectedSetting.currentWallpaper.url;
+        loadedSettings.currentWallpaper.updatedAt = new Date();
         setWallpaper(selectedSetting.currentWallpaper.url);
     }
 
-    if (selectedSetting.isCountdown !== loadedSetting.isCountdown) {
-        loadedSetting.isCountdown = selectedSetting.isCountdown;
+    if (selectedSetting.isCountdown !== loadedSettings.isCountdown) {
+        loadedSettings.isCountdown = selectedSetting.isCountdown;
         if (selectedSetting.isCountdown) {
             const timer = elements.timePicker.value;
             if (!timer) {
@@ -313,7 +322,7 @@ function saveSettings() {
 }
 
 function applyClockSetting() {
-    if (loadedSetting.isCountdown) {
+    if (loadedSettings.isCountdown) {
         setCountdown();
     } else {
         setClock();
@@ -321,7 +330,7 @@ function applyClockSetting() {
 }
 
 function loadSearchSetting() {
-    if (loadedSetting.isOpenSearchInNewTab) {
+    if (loadedSettings.isOpenSearchInNewTab) {
         document.getElementById('search-form').setAttribute('target', "_blank");
     } else {
         document.getElementById('search-form').setAttribute('target', "_self");
@@ -343,7 +352,7 @@ function loadShortcuts() {
     let listShortcuts = "";
 
     shortcuts.forEach(item => {
-        listShortcuts += `<div class="web-item"><a href="${item.url}"${loadedSetting.isOpenLinkInNewTab ? ' target="_blank"' : ''}>
+        listShortcuts += `<div class="web-item"><a href="${item.url}"${loadedSettings.isOpenLinkInNewTab ? ' target="_blank"' : ''}>
                 <div class="web-item-bg">
                     <img src="${item.icon}" />
                 </div>
