@@ -43,7 +43,7 @@ body {
   color: var(--accent) !important;
 }
 
-.wrapper {
+.page-wrapper {
   width: 100%;
   height: 100%;
   padding-top: 150px;
@@ -56,7 +56,7 @@ body {
     linear-gradient(180deg, rgb(0 0 0 / 0.15) 0%, transparent 100%);
 }
 
-.label {
+.timer-label {
   text-shadow: -1px -1px 0px #00000055;
 }
 
@@ -78,24 +78,17 @@ body {
   margin: 0 auto;
 }
 
-.countdown {
+.timer {
   padding: 0 10px;
 }
 
-.countdown,
-.date,
-.notify {
+.timer,
+.date-display,
+.alert-message {
   display: flex;
 }
 
-.countdown.hide,
-.notify.hide,
-.overlay.hide,
-#setting_time-picker.hide {
-  display: none;
-}
-
-.date {
+.date-display {
   flex-direction: column;
   justify-content: end;
   margin-left: 10px;
@@ -103,12 +96,12 @@ body {
   text-shadow: -1px -1px 0px #00000055;
 }
 
-.flip-container {
+.timer-flip-container {
   perspective: 1000px;
   margin: 0 10px;
 }
 
-.flip {
+.flip-card {
   position: relative;
   width: 81px;
   height: 81px;
@@ -132,12 +125,9 @@ body {
   transform: rotateY(180deg);
 }
 
-.flip-container.flipped .flip {
+.timer-flip-container.flipped .flip-card {
   transform: rotateY(180deg);
-}
-
-#daysFlip {
-  animation: flip 1s infinite;
+  animation: flip 1s ease-in-out;
 }
 
 @keyframes flip {
@@ -154,7 +144,7 @@ body {
   }
 }
 
-.date span {
+.date-display span {
   margin: 2px 0px;
   font-size: 27px;
   color: var(--white);
@@ -164,7 +154,7 @@ body {
 .hours,
 .minutes,
 .seconds,
-.notify {
+.alert-message {
   display: block;
   text-align: center;
   font-size: 64px;
@@ -173,7 +163,7 @@ body {
   text-shadow: -1px -1px 0px #00000055;
 }
 
-.search-form {
+.search-bar {
   position: relative;
   margin-top: 30px;
   padding: 0 10px;
@@ -184,7 +174,7 @@ body {
   font-style: italic;
 }
 
-.search-input {
+.search-input-field {
   width: 100%;
   height: 42px;
   padding: 4px 50px;
@@ -198,16 +188,16 @@ body {
   background-color: var(--button-bg);
 }
 
-.search-input:hover {
+.search-input-field:hover {
   background-color: var(--button-hover);
 }
 
-.search-input:focus {
+.search-input-field:focus {
   outline: none;
   background-color: var(--white);
 }
 
-.search-input:focus + #btn-search svg {
+.search-input-field:focus + #search-icon svg {
   fill: var(--black);
 }
 
@@ -227,7 +217,7 @@ body {
   border-color: var(--accent);
 }
 
-#btn-search {
+#search-icon {
   position: absolute;
   top: 7px;
   left: 25px;
@@ -243,15 +233,22 @@ body {
   gap: 10px;
 }
 
+#top-sites-list {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .top-sites-grid {
   display: grid;
   flex-direction: row;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 0px;
+  /* grid-template-rows: repeat(4, 1fr); */
+  row-gap: 5px;
+  margin-bottom: 15px;
 }
 
-.web-item {
+.shortcut {
   height: 97px;
   width: 92px;
   display: flex;
@@ -261,14 +258,17 @@ body {
   position: relative;
 }
 
-.web-item a {
+.shortcut a {
   color: var(--white);
   text-decoration: none;
   text-align: center;
   text-shadow: -1px -1px 0px #00000055;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
-.web-item .web-item-bg {
+.shortcut .shortcut-icon-bg {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -280,35 +280,41 @@ body {
   background-color: var(--button-bg);
 }
 
-.web-item .web-item-bg:hover,
-#btn-setting:hover {
+.shortcut .shortcut-icon-bg:hover,
+#settings-button:hover {
   background-color: var(--button-hover);
 }
 
-.top-sites-grid .web-item .web-item-bg {
+.top-sites-grid .shortcut .shortcut-icon-bg {
   border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.25);
 }
 
-.top-sites-grid .web-item.active .web-item-bg,
-.top-sites-grid .web-item .web-item-bg:hover {
+.top-sites-grid .shortcut.active .shortcut-icon-bg,
+.top-sites-grid .shortcut .shortcut-icon-bg:hover {
   border: 1px solid var(--accent);
 }
 
-.web-item .web-item-bg img {
+.top-sites-grid .shortcut span {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.shortcut .shortcut-icon-bg img {
   height: 48px;
   width: 48px;
 }
 
-.web-item span {
+.shortcut span {
   margin-top: 4px;
   text-shadow: -1px -1px 0px #00000055;
+  text-align: center;
 }
 
-.web-item:hover .btn-edit {
+.shortcut:hover .shortcut-edit-button {
   display: flex;
 }
 
-.btn-edit {
+.shortcut-edit-button {
   position: absolute;
   top: -5px;
   right: 5px;
@@ -320,7 +326,7 @@ body {
   display: none;
 }
 
-#btn-setting {
+#settings-button {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -335,57 +341,43 @@ body {
   cursor: pointer;
 }
 
-#btn-search svg,
-#btn-setting svg {
+#search-icon svg,
+#settings-button svg {
   fill: var(--white);
 }
 
-.btn-clocktype {
+.clock-type-button {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 8px;
-  /* padding: 20px; */
   height: 165px;
   border: 2px solid transparent;
   cursor: pointer;
 }
 
-.btn-clocktype .label {
+.clock-type-button .timer-label {
   height: 24px;
   width: 100%;
   text-align: center;
 }
-.btn-clocktype.selected,
-.btn-clocktype:hover {
+.clock-type-button.selected,
+.clock-type-button:hover {
   border: 2px solid var(--accent);
 }
 
-.btn-clocktype.selected span,
+.clock-type-button.selected span,
 .nav-tab.active,
 .nav-tab:hover {
   color: var(--accent) !important;
 }
 
-.btn-clocktype img {
+.clock-type-button img {
   height: 80px;
   width: 80px;
   margin: 10px 0;
   border-radius: 8px;
-}
-
-input[type="time"] {
-  background-color: var(--white);
-  padding: 5px 15px;
-  border-radius: 8px;
-  border: none;
-}
-
-#setting_time-picker:hover,
-#setting_time-picker:focus {
-  outline: none;
-  background-color: var(--button-hover);
 }
 
 .btn-accent {
@@ -425,16 +417,25 @@ input[type="time"] {
 .modal-footer {
   border: none;
 }
-
-.modal input[type="text"],
-.modal input[type="time"] {
+.form-control {
   backdrop-filter: blur(10px) saturate(125%);
-  background-color: var(--button-bg);
+  /* background-color: var(--button-bg); */
+  background: rgba(255, 255, 255, 0.25);
   border: none;
   color: var(--white);
 }
 
-.modal .modal-body label {
+.form-control:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.modal .modal-body timer-label {
   color: var(--white) !important;
   background-color: transparent !important;
 }
@@ -443,7 +444,7 @@ input::placeholder {
   color: var(--secondary) !important;
 }
 
-#popup-setting .modal-dialog {
+#settings-modal .modal-dialog {
   width: 100%;
   max-width: 420px;
   height: 100%;
@@ -452,7 +453,7 @@ input::placeholder {
   position: fixed;
 }
 
-#popup-setting.modal.fade:not(.in).right .modal-dialog {
+#settings-modal.modal.fade:not(.in).right .modal-dialog {
   -webkit-transform: translate3d(25%, 0, 0);
   transform: translate3d(25%, 0, 0);
 }
@@ -470,8 +471,29 @@ input::placeholder {
   cursor: pointer; /* Changes the cursor to a pointer when hovering over the icon */
 }
 
+#countdown-settings {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--button-bg);
+  overflow: hidden;
+  transition: height 0.4s ease, opacity 0.4s ease;
+}
+
+#countdown-settings.hide {
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  display: none !important;
+}
+
+#countdown-settings.expanded {
+  height: 188px;
+  opacity: 1;
+  display: block;
+}
+
 #refresh-icon.rotate {
-  transform: rotate(360deg); /* Rotate the icon by 360 degrees */
+  transform: rotate(360deg);
 }
 
 .nav-tab {
@@ -483,4 +505,33 @@ input::placeholder {
 .nav-tab.active {
   border-bottom: 2px solid var(--accent);
   background-color: transparent !important;
+}
+
+/* Scrollbar style */
+html,
+body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: transparent;
 }
