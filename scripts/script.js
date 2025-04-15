@@ -500,7 +500,7 @@ function loadTopSite() {
     Object.keys(categories).forEach(category => {
         listTopSite += `<h6 class="category-title">${category}</h6><div class="top-sites-grid">`;
         categories[category].forEach(item => {
-            listTopSite += `<div class="shortcut${elements.shortcutUrl.value == item.url ? ' active' : ''}" onClick="addTopSite('${item.name}','${item.url}')">
+            listTopSite += `<div class="topsite-item shortcut${elements.shortcutUrl.value == item.url ? ' active' : ''}" data-name="${item.name}" data-url="${item.url}">
                         <div class="shortcut-icon-bg">
                             <img src="${item.icon}" />
                         </div>
@@ -511,6 +511,13 @@ function loadTopSite() {
     });
 
     document.getElementById('top-sites-list').innerHTML = listTopSite;
+    document.querySelectorAll('.topsite-item').forEach(shortcut => {
+        shortcut.addEventListener('click', function () {
+            const name = this.getAttribute('data-name');
+            const url = this.getAttribute('data-url');
+            addTopSite(name, url);
+        });
+    });
 }
 
 
