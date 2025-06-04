@@ -47,7 +47,10 @@ export const wallpaperService = {
         if (response.ok) {
           const data = await response.json();
           const imageUrl = data.url;
-          listWallpaper.push(imageUrl);
+          listWallpaper.push({
+            url: imageUrl,
+            updatedAt: new Date().toDateString(),
+          });
         } else {
           throw new Error(`API responded with status: ${response.status}`);
         }

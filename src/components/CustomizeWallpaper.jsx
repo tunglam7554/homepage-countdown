@@ -80,16 +80,16 @@ export default function CustomizeWalpaper({ setWallpaper }) {
           <div
             key={index}
             className={`${
-              currentWallpaper === wallpaper ? "ring-2 ring-white" : ""
+              currentWallpaper === wallpaper.url ? "ring-2 ring-white" : ""
             } rounded-xl cursor-pointer`}
             onClick={() => {
               setCurrentWallpaper(wallpaper);
-              setWallpaper(wallpaper);
+              setWallpaper(wallpaper.url);
             }}
           >
             <img
               className="w-full h-full object-cover rounded-xl"
-              src={wallpaper}
+              src={wallpaper.url}
               alt="wallpaper"
             />
           </div>
