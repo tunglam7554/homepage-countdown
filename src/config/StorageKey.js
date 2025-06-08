@@ -1,0 +1,16 @@
+export const SHORT_CUTS = "shortcut";
+export const CURRENT_WALLPAPER = "currentWallpaper";
+export const LIST_WALLPAPER_UPDATED_AT = "listWallpaperUpdatedAt";
+export const LIST_WALLPAPER = "listWallpaper";
+export const COUNTDOWN_MESSAGE = "countdownMessage";
+export const IS_COUNTDOWN = "isCountdown";
+export const IS_REFRESH_WALLPAPER = "isRefreshWallpaper";
+export const IS_OPEN_LINK_IN_NEW_TAB = "isOpenLinkInNewTab";
+export const IS_OPEN_SEARCH_IN_NEW_TAB = "isOpenSearchInNewTab";
+export const IS_CELSIUS = "isCelsius";
+export const LOCATION = "location";
+export const IS_12H = "is12H";
+export const IS_SHOW_WEATHER = "isShowWeather";
+export const SEARCH_ENGINE = "searchEngine";
+export const COUNTDOWN_TIME = "timer";
+export const UPDATE_CONFIG = "updateConfig";

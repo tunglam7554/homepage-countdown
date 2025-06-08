@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+:root{
+  --accent-color: #33cccc;
+}
+
+button {
+  cursor: pointer;
+}
+
+.searchbar {
+  backdrop-filter: blur(10px) saturate(125%);
+  background-color: rgba(41, 44, 46, 0.5);
+  color:#fff!important;
+}
+
+.searchbar:focus, input:focus{
+    background-color: #fff !important;
+    color:#000 !important;
+    transition: all 0.5s ease-in-out;
+}
+
+.shortcut {
+  height: 97px;
+  width: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.shortcut .shortcut-icon-wrap {
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  text-shadow: -1px -1px 0px #00000055;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.shortcut .shortcut-icon-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  height: 72px;
+  width: 72px;
+  border-radius: 18px;
+  backdrop-filter: blur(10px) saturate(125%);
+  background-color: rgba(41, 44, 46, 0.5);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.shortcut .shortcut-icon-bg:hover,
+.searchbar:hover,
+#settings-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.shortcut .shortcut-icon-bg img {
+  height: 48px;
+  width: 48px;
+}
+
+.shortcut span {
+  margin-top: 4px;
+  text-shadow: -1px -1px 0px #00000055;
+  text-align: center;
+}
+
+.shortcut-edit-button {
+  position: absolute;
+  top: -5px;
+  right: 5px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 3px;
+  justify-content: center;
+  align-items: center;
+}
+
+.shortcut-checkbox {
+  position: absolute;
+  top: -5px;
+  right: 5px;
+  padding: 3px;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-accent{
+  color: var(--accent-color);
+}
+
+.bg-accent{
+  background-color: var(--accent-color);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
