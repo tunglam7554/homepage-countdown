@@ -10,7 +10,7 @@ const popupStyle = {
   backgroundColor: "rgba(41, 44, 46, 0.5)",
   position: "fixed",
   height: 431,
-  width: 358,
+  width: 334,
   top: 56,
   right: 20,
   bottom: 0,
