@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
-:root{
+:root {
   --accent-color: #33cccc;
+  --white: #fff;
+  --black: #000;
 }
 
 button {
@@ -11,13 +13,19 @@ button {
 .searchbar {
   backdrop-filter: blur(10px) saturate(125%);
   background-color: rgba(41, 44, 46, 0.5);
-  color:#fff!important;
+  color: #fff !important;
 }
 
-.searchbar:focus, input:focus{
-    background-color: #fff !important;
-    color:#000 !important;
-    transition: all 0.5s ease-in-out;
+.searchbar:focus,
+input:focus {
+  background-color: var(--white) !important;
+  color: var(--black) !important;
+  transition: all 0.5s ease-in-out;
+}
+
+.searchbar:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.5s ease-in-out;
 }
 
 .shortcut {
@@ -50,13 +58,14 @@ button {
   border-radius: 18px;
   backdrop-filter: blur(10px) saturate(125%);
   background-color: rgba(41, 44, 46, 0.5);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .shortcut .shortcut-icon-bg:hover,
 .searchbar:hover,
 #settings-button:hover {
   background-color: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .shortcut .shortcut-icon-bg img {
@@ -90,11 +99,11 @@ button {
   align-items: center;
 }
 
-.text-accent{
+.text-accent {
   color: var(--accent-color);
 }
 
-.bg-accent{
+.bg-accent {
   background-color: var(--accent-color);
 }
 

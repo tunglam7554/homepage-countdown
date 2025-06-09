@@ -28,7 +28,7 @@ const CustomizeButtonStyle = {
 };
 
 const ButtonTabStyle =
-  "text-shadow-lg hover:text-gray-950 hover:bg-white px-3 rounded-s-3xl rounded-e-3xl text-center";
+  "flex-1 text-shadow-lg hover:text-gray-950 hover:bg-white hover:shadow-lg px-3 rounded-s-3xl rounded-e-3xl text-center";
 
 export default function CustomizeBar({
   isEditMode,
@@ -57,7 +57,7 @@ export default function CustomizeBar({
     <AnimatePresence>
       {isEditMode ? (
         <motion.div
-          className="flex gap-2"
+          className="flex gap-2 text-sm"
           style={CustomizeBarPosition}
           key={isEditMode ? "editMode" : "normalMode"}
           initial={{ opacity: 0, x: 10 }}
@@ -75,48 +75,49 @@ export default function CustomizeBar({
               + Add
             </button>
           </div>
-          <div className="shadow-lg rounded-full" style={CustomizeBarStyle}>
-            <div className="flex gap-2 text-white">
-              <button
-                className={`${ButtonTabStyle} ${
-                  selectedTab == 1 && " bg-white text-gray-950"
-                }`}
-                onClick={() => setSelectedTab(1)}
-              >
-                Clock
-              </button>
-              <button
-                className={`${ButtonTabStyle} ${
-                  selectedTab == 2 && " bg-white text-gray-950"
-                }`}
-                onClick={() => setSelectedTab(2)}
-              >
-                Wallpaper
-              </button>
-              <button
-                className={`${ButtonTabStyle} ${
-                  selectedTab == 3 && " bg-white text-gray-950"
-                }`}
-                onClick={() => setSelectedTab(3)}
-              >
-                Options
-              </button>
-              <button className={ButtonTabStyle} onClick={handleExitEditMode}>
-                Done
-              </button>
-            </div>
+          <div
+            className="shadow-lg rounded-full flex gap-2 text-white justify-space-between"
+            style={{ ...CustomizeBarStyle, width: 334 }}
+          >
+            <button
+              className={`${ButtonTabStyle} ${
+                selectedTab == 1 && " bg-white text-gray-950"
+              }`}
+              onClick={() => setSelectedTab(1)}
+            >
+              Clock
+            </button>
+            <button
+              className={`${ButtonTabStyle} ${
+                selectedTab == 2 && " bg-white text-gray-950"
+              }`}
+              onClick={() => setSelectedTab(2)}
+            >
+              Wallpaper
+            </button>
+            <button
+              className={`${ButtonTabStyle} ${
+                selectedTab == 3 && " bg-white text-gray-950"
+              }`}
+              onClick={() => setSelectedTab(3)}
+            >
+              Options
+            </button>
+            <button className={ButtonTabStyle} onClick={handleExitEditMode}>
+              Done
+            </button>
           </div>
         </motion.div>
       ) : (
         <motion.div
-          className="flex gap-2"
+          className="flex gap-2 text-sm"
           style={CustomizeBarPosition}
           key={isEditMode ? "editMode" : "normalMode"}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="shadow-lg rounded-full" style={CustomizeButtonStyle}>
+          <div className="rounded-full" style={CustomizeButtonStyle}>
             <button className={ButtonTabStyle} onClick={handleEnterEditMode}>
               Customize
             </button>

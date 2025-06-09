@@ -37,9 +37,9 @@ function App() {
 
   return (
     <div
-      className="h-screen w-screen"
+      className="h-screen w-screen bg-center bg-cover bg-no-repeat"
       style={{
-        background: wallpaper
+        backgroundImage: wallpaper
           ? `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${wallpaper})`
           : "linear-gradient(135deg, rgba(15, 104, 235, 1) 0%, rgba(9, 98, 121, 1) 50%, rgba(72, 205, 227, 1) 100%)",
       }}

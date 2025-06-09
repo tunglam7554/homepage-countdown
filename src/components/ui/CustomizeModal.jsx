@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "framer-motion";
 const popupStyle = {
   paddingLeft: 15,
   paddingRight: 15,
@@ -20,5 +21,17 @@ const popupStyle = {
 };
 
 export default function CustomizeModal({ children }) {
-  return <div style={popupStyle}>{children}</div>;
+  return (
+    <AnimatePresence>
+      <motion.div
+        style={popupStyle}
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: 431, opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.25 }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  );
 }

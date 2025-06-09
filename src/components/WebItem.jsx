@@ -25,7 +25,7 @@ export default function WebItem({ app, isEditing, onEdit }) {
   return (
     <AnimatePresence>
       <div
-        className="shortcut"
+        className="shortcut text-sm"
         ref={setNodeRef}
         style={style}
         {...attributes}
