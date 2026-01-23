@@ -14,3 +14,4 @@ export const IS_SHOW_WEATHER = "isShowWeather";
 export const SEARCH_ENGINE = "searchEngine";
 export const COUNTDOWN_TIME = "timer";
 export const UPDATE_CONFIG = "updateConfig";
+export const SYNC_KEY = "syncKey";
