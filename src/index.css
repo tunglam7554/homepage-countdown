@@ -1,128 +1,136 @@
 @import "tailwindcss";
 
 :root {
-  --accent-color: #33cccc;
-  --white: #fff;
-  --black: #000;
+    --accent-color: #33cccc;
+    --white: #fff;
+    --black: #000;
 }
 
 button {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .searchbar {
-  backdrop-filter: blur(10px) saturate(125%);
-  background-color: rgba(41, 44, 46, 0.5);
-  color: #fff !important;
+    backdrop-filter: blur(10px) saturate(125%);
+    background-color: rgba(41, 44, 46, 0.5);
+    color: #fff !important;
 }
 
 .searchbar:focus,
 input:focus {
-  background-color: var(--white) !important;
-  color: var(--black) !important;
-  transition: all 0.5s ease-in-out;
+    background-color: var(--white) !important;
+    color: var(--black) !important;
+    transition: all 0.5s ease-in-out;
 }
 
 .searchbar:hover {
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  transition: all 0.5s ease-in-out;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transition: all 0.5s ease-in-out;
 }
 
 .shortcut {
-  height: 97px;
-  width: 92px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
+    height: 97px;
+    width: 92px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
 }
 
 .shortcut .shortcut-icon-wrap {
-  color: #fff;
-  text-decoration: none;
-  text-align: center;
-  text-shadow: -1px -1px 0px #00000055;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    text-shadow: -1px -1px 0px #00000055;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .shortcut .shortcut-icon-bg {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  height: 72px;
-  width: 72px;
-  border-radius: 18px;
-  backdrop-filter: blur(10px) saturate(125%);
-  background-color: rgba(41, 44, 46, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    height: 72px;
+    width: 72px;
+    border-radius: 18px;
+    backdrop-filter: blur(10px) saturate(125%);
+    background-color: rgba(41, 44, 46, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .shortcut .shortcut-icon-bg:hover,
 .searchbar:hover,
 #settings-button:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  border-color: rgba(255, 255, 255, 0.5) !important;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .shortcut .shortcut-icon-bg img {
-  height: 48px;
-  width: 48px;
+    height: 48px;
+    width: 48px;
 }
 
 .shortcut span {
-  margin-top: 4px;
-  text-shadow: -1px -1px 0px #00000055;
-  text-align: center;
+    margin-top: 4px;
+    text-shadow: -1px -1px 0px #00000055;
+    text-align: center;
 }
 
 .shortcut-edit-button {
-  position: absolute;
-  top: -5px;
-  right: 5px;
-  background-color: #fff;
-  border-radius: 50%;
-  padding: 3px;
-  justify-content: center;
-  align-items: center;
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 3px;
+    justify-content: center;
+    align-items: center;
 }
 
 .shortcut-checkbox {
-  position: absolute;
-  top: -5px;
-  right: 5px;
-  padding: 3px;
-  justify-content: center;
-  align-items: center;
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    padding: 3px;
+    justify-content: center;
+    align-items: center;
 }
 
 .text-accent {
-  color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 .bg-accent {
-  background-color: var(--accent-color);
+    background-color: var(--accent-color);
+}
+
+.bg-progress {
+    background: linear-gradient(
+        90deg,
+        rgba(59, 130, 246, 0.15),
+        rgba(96, 165, 250, 0.15)
+    );
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+    width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: content-box;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.4);
 }

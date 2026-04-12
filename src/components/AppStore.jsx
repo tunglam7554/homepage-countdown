@@ -5,6 +5,7 @@ import Category from "./ui/Category";
 import CreateApp from "./app-store/CreateApp";
 import InstalledApp from "./app-store/InstalledApp";
 import GridApp from "./app-store/GridApp";
+import ButtonClose from "./ui/ButtonClose";
 
 const overlayStyle = {
     color: "#fff",
@@ -246,26 +247,7 @@ function AppStore({ onClose, onInstall, onEdit, onUninstall, installedApps }) {
                             placeholder="Search apps..."
                             autocomplete="off"
                         />
-                        <button
-                            className="text-gray-400 h-8 w-8 flex items-center justify-center rounded-full hover:bg-amber-50 hover:text-red-500 transition-colors"
-                            onClick={onClose}
-                            aria-label="Close"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                className="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                aria-hidden="true"
-                            >
-                                <path d="M18 6L6 18" />
-                                <path d="M6 6L18 18" />
-                            </svg>
-                        </button>
+                        <ButtonClose onClose={onClose} />
                     </div>
                     <div
                         className="flex flex-row gap-6"
@@ -315,7 +297,7 @@ function AppStore({ onClose, onInstall, onEdit, onUninstall, installedApps }) {
                             style={{ maxHeight: "100%", overflow: "auto" }}
                         >
                             {selectedCategory === "create-app" && (
-                                <CreateApp onSubmit={onInstall} />
+                                <CreateApp onInstall={onInstall} />
                             )}
                             {selectedCategory === "installed" && (
                                 <InstalledApp

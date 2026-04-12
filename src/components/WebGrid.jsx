@@ -65,14 +65,12 @@ export default function WebGrid({
     };
 
     const onEdit = (updatedApp) => {
-        debugger;
         updatedApp.icon = ICON_URL + updatedApp.url;
         var updatedApps = apps.map((a) =>
             a.id === updatedApp.id ? updatedApp : a,
         );
         setApps(updatedApps);
         SaveListShortcut(updatedApps);
-        console.log(updatedApps);
         setEditingApp(null);
     };
 
