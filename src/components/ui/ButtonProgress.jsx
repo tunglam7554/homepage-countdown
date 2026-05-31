@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { cn } from "../../utils/helper";
 
 export default function ButtonProgress({
     onClick,
@@ -83,13 +84,23 @@ export default function ButtonProgress({
 
     return (
         <button
-            className={`flex rounded-2xl relative items-center justify-center overflow-hidden ${className} ${loading ? loadingClassName : normalClassName} ${disabled ? "cursor-not-allowed opacity-50" : "opacity-95 hover:opacity-100"}`}
+            className={cn(
+                `flex rounded-2xl relative items-center justify-center overflow-hidden`,
+                className,
+                loading ? loadingClassName : normalClassName,
+                disabled
+                    ? "cursor-not-allowed opacity-50"
+                    : "opacity-95 hover:opacity-100",
+            )}
             onClick={handleClick}
             disabled={disabled || loading}
             aria-busy={loading}
         >
             <div
-                className={`absolute left-0 top-0 bottom-0 rounded-2xl ${loading ? progressClassName : "bg-transparent"}`}
+                className={cn(
+                    "absolute left-0 top-0 bottom-0 rounded-2xl",
+                    loading ? progressClassName : "bg-transparent",
+                )}
                 style={{
                     width: `${progress}%`,
                     transition: "width 50ms linear",

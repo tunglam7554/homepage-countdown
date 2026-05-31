@@ -6,6 +6,7 @@ import CreateApp from "./app-store/CreateApp";
 import InstalledApp from "./app-store/InstalledApp";
 import GridApp from "./app-store/GridApp";
 import ButtonClose from "./ui/ButtonClose";
+import { cn } from "../utils/helper";
 
 const overlayStyle = {
     color: "#fff",
@@ -258,11 +259,12 @@ function AppStore({ onClose, onInstall, onEdit, onUninstall, installedApps }) {
                             style={{ maxHeight: "100%" }}
                         >
                             <div
-                                className={`rounded-2xl flex flex-col mb-2 px-4 py-2 text-center cursor-pointer transition-colors ${
+                                className={cn(
+                                    `rounded-2xl flex flex-col mb-2 px-4 py-2 text-center cursor-pointer transition-colors`,
                                     "create-app" === selectedCategory
                                         ? "bg-blue-400 text-white"
-                                        : "bg-white/10 text-white hover:bg-white hover:text-blue-400"
-                                }`}
+                                        : "bg-white/10 text-white hover:bg-white hover:text-blue-400",
+                                )}
                                 onClick={() =>
                                     handleCategoryClick("create-app")
                                 }

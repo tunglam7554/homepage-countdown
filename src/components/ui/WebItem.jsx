@@ -42,7 +42,7 @@ export default function WebItem({ app, isEditing, onEdit }) {
                             );
                             window.open(
                                 app.url,
-                                isOpenLinkInNewTab ? "_blank" : "_self",
+                                isOpenLinkInNewTab ? "_blank" : "_top",
                             );
                         }
                     }}
