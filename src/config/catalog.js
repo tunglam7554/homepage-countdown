@@ -30,6 +30,7 @@ export const topsite = [
         category: "AI Tools",
         listItem: [
             { icon: "", name: "ChatGPT", url: "https://chat.openai.com" },
+            { icon: "", name: "Gemini", url: "https://gemini.google.com" },
             { icon: "", name: "DALL·E", url: "https://openai.com/dall-e" },
             { icon: "", name: "Midjourney", url: "https://midjourney.com" },
             { icon: "", name: "Runway ML", url: "https://runwayml.com" },
@@ -102,6 +103,7 @@ export const topsite = [
         listItem: [
             { icon: "", name: "Spotify", url: "https://spotify.com" },
             { icon: "", name: "Apple Music", url: "https://music.apple.com" },
+            { icon: "", name: "Youtube Music", url: "https://music.youtube.com" },
             { icon: "", name: "SoundCloud", url: "https://soundcloud.com" },
             { icon: "", name: "Nhaccuatui", url: "https://nhaccuatui.com" },
             { icon: "", name: "Zing MP3", url: "https://zingmp3.vn" },
