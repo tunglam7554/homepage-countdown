@@ -1,11 +1,9 @@
 name: Deploy Vite React to GitHub Pages
 
 on:
-  pull_request:
+  push:
     branches:
       - production
-    types:
-      - closed
 
 permissions:
   contents: read
@@ -18,8 +16,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true &&
-        github.event.pull_request.base.ref == 'production' &&
+    if: github.event.pull_request.base.ref == 'production' &&
         github.event.pull_request.head.ref == 'main'
 
     runs-on: ubuntu-latest
