@@ -95,7 +95,6 @@ export const topsite = [
             { icon: "", name: "Alibaba", url: "https://alibaba.com" },
             { icon: "", name: "Shopee", url: "https://shopee.vn" },
             { icon: "", name: "Lazada", url: "https://lazada.vn" },
-            { icon: "", name: "Tiki", url: "https://tiki.vn" },
         ],
     },
     {
