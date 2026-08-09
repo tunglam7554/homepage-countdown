@@ -29,8 +29,8 @@ input:focus {
 }
 
 .shortcut {
-    height: 97px;
-    width: 92px;
+    height: clamp(76px, 22vw, 97px);
+    width: clamp(68px, 20vw, 92px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,9 +52,9 @@ input:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    height: 72px;
-    width: 72px;
+    padding: clamp(6px, 2vw, 10px);
+    height: clamp(56px, 16vw, 72px);
+    width: clamp(56px, 16vw, 72px);
     border-radius: 18px;
     backdrop-filter: blur(10px) saturate(125%);
     background-color: rgba(41, 44, 46, 0.5);
@@ -69,14 +69,19 @@ input:focus {
 }
 
 .shortcut .shortcut-icon-bg img {
-    height: 48px;
-    width: 48px;
+    height: clamp(36px, 10vw, 48px);
+    width: clamp(36px, 10vw, 48px);
 }
 
 .shortcut span {
     margin-top: 4px;
     text-shadow: -1px -1px 0px #00000055;
     text-align: center;
+    font-size: clamp(11px, 3vw, 14px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .shortcut-edit-button {

@@ -22,10 +22,10 @@ export default function AppItem({ app, isInstalled, onInstall, onView }) {
 
     return (
         <div
-            className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/10 cursor-default"
+            className="flex flex-col @[260px]:flex-row @[260px]:items-center items-stretch justify-between gap-2 p-3 rounded-2xl hover:bg-white/10 cursor-default"
             role="button"
         >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
                 <div className="w-14 h-14 rounded-lg overflow-hidden shortcut-icon-bg flex-shrink-0">
                     <img
                         src={
@@ -36,23 +36,28 @@ export default function AppItem({ app, isInstalled, onInstall, onView }) {
                         className="w-full h-full object-cover"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <div className="font-semibold text-white">{app.name}</div>
-                    <div className="text-sm text-gray-300">{getSubtitle()}</div>
+                <div className="flex flex-col min-w-0">
+                    <div className="font-semibold text-white truncate">
+                        {app.name}
+                    </div>
+                    <div className="text-sm text-gray-300 truncate">
+                        {getSubtitle()}
+                    </div>
                 </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0 w-full @[260px]:w-auto">
                 {!isInstalled ? (
                     <ButtonProgress
                         onClick={() => onInstall(app)}
                         loadingText="Installing..."
                         text="Install"
                         successText="Open"
+                        className="w-full @[260px]:w-auto bg-white/10 px-3 py-1 text-sm"
                     />
                 ) : (
                     <button
-                        className="px-3 py-1 rounded-full bg-white text-black text-sm"
+                        className="w-full @[260px]:w-auto px-3 py-1 rounded-full bg-white text-black text-sm"
                         onClick={handleView}
                     >
                         Open

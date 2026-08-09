@@ -8,7 +8,9 @@ const popupStyle = {
     backdropFilter: "blur(50px)",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     color: "#fff",
-    width: 500,
+    width: "min(500px, 92vw)",
+    maxHeight: "90vh",
+    overflowY: "auto",
     border: "1px solid rgba(255,255,255,0.2)",
 };
 

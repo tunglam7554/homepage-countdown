@@ -67,10 +67,10 @@ const CreateApp = ({ onInstall }) => {
 
     return (
         <>
-            <div className="w-full p-40 flex flex-col items-center gap-4">
-                <div className="flex flex-row gap-4 w-full">
+            <div className="w-full p-4 sm:p-10 lg:p-40 flex flex-col items-center gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
                     <div
-                        className="flex justify-center items-center w-40 border-2 rounded-2xl"
+                        className="flex justify-center items-center w-full h-24 sm:w-40 sm:h-40 border-2 rounded-2xl shrink-0"
                         style={iconStyle}
                     >
                         <img

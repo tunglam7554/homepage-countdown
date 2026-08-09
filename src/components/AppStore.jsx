@@ -41,7 +41,6 @@ const inputStyle = {
     color: "#fff",
     fontSize: 14,
     outline: "none",
-    width: "500px",
 };
 
 function AppStore({ onClose, onInstall, onEdit, onUninstall, installedApps }) {
@@ -226,22 +225,24 @@ function AppStore({ onClose, onInstall, onEdit, onUninstall, installedApps }) {
         <AnimatePresence>
             <div style={overlayStyle}>
                 <motion.div
-                    className="shadow-lg"
+                    className="shadow-lg flex flex-col"
                     style={{
                         ...popupStyle,
-                        height: 720,
-                        width: 1200,
+                        height: "min(720px, 90vh)",
+                        width: "min(1200px, 95vw)",
                     }}
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ duration: 0.15 }}
                 >
-                    <div className="w-full flex justify-between items-center mb-4 px-4">
-                        <h2 className="text-2xl font-bold">App Store</h2>
+                    <div className="w-full flex flex-wrap sm:flex-nowrap justify-between items-center gap-3 mb-3 sm:mb-4 px-2 sm:px-4 shrink-0">
+                        <h2 className="text-xl sm:text-2xl font-bold shrink-0">
+                            App Store
+                        </h2>
                         <input
                             type="text"
-                            className="placeholder:italic focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                            className="placeholder:italic focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition order-3 sm:order-none w-full sm:w-auto sm:flex-1 sm:max-w-[500px]"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             style={inputStyle}
@@ -250,17 +251,11 @@ function AppStore({ onClose, onInstall, onEdit, onUninstall, installedApps }) {
                         />
                         <ButtonClose onClose={onClose} />
                     </div>
-                    <div
-                        className="flex flex-row gap-6"
-                        style={{ height: "calc(100% - 64px)" }}
-                    >
-                        <div
-                            className="w-64 overflow-y-auto pr-2"
-                            style={{ maxHeight: "100%" }}
-                        >
+                    <div className="flex flex-col md:flex-row gap-3 md:gap-6 flex-1 min-h-0">
+                        <div className="w-full md:w-64 flex flex-row md:flex-col gap-2 md:gap-0 overflow-x-auto md:overflow-x-visible md:overflow-y-auto pb-2 md:pb-0 px-2 md:px-0 md:pr-2 shrink-0">
                             <div
                                 className={cn(
-                                    `rounded-2xl flex flex-col mb-2 px-4 py-2 text-center cursor-pointer transition-colors`,
+                                    `rounded-2xl flex flex-col shrink-0 whitespace-nowrap md:mb-2 px-4 py-2 text-center cursor-pointer transition-colors`,
                                     "create-app" === selectedCategory
                                         ? "bg-blue-400 text-white"
                                         : "bg-white/10 text-white hover:bg-white hover:text-blue-400",
@@ -294,10 +289,7 @@ function AppStore({ onClose, onInstall, onEdit, onUninstall, installedApps }) {
                             />
                             {loadCategoryApps}
                         </div>
-                        <div
-                            className="flex-1"
-                            style={{ maxHeight: "100%", overflow: "auto" }}
-                        >
+                        <div className="flex-1 min-h-0 overflow-auto">
                             {selectedCategory === "create-app" && (
                                 <CreateApp onInstall={onInstall} />
                             )}
