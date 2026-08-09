@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     DndContext,
     closestCenter,
@@ -25,37 +25,46 @@ export default function WebGrid({
 }) {
     const sensors = useSensors(useSensor(PointerSensor));
     const [apps, setApps] = useState([]);
+    const isFirstLoad = useRef(true);
 
     useEffect(() => {
         const listShortcut = GetListShortcut();
         setApps(listShortcut);
     }, []);
 
+    useEffect(() => {
+        if (isFirstLoad.current) {
+            // skip saving the just-loaded list right back over itself
+            isFirstLoad.current = false;
+            return;
+        }
+        SaveListShortcut(apps);
+    }, [apps]);
+
     const handleDragEnd = (event) => {
         const { active, over } = event;
         if (active.id !== over?.id) {
-            const oldIndex = apps.findIndex((a) => a.id === active.id);
-            const newIndex = apps.findIndex((a) => a.id === over.id);
-            setApps(arrayMove(apps, oldIndex, newIndex));
-            SaveListShortcut(apps);
+            setApps((prevApps) => {
+                const oldIndex = prevApps.findIndex((a) => a.id === active.id);
+                const newIndex = prevApps.findIndex((a) => a.id === over.id);
+                return arrayMove(prevApps, oldIndex, newIndex);
+            });
         }
     };
 
     const onInstall = (newApps) => {
-        // Avoid duplicates
-        const existingIds = apps.map((a) => a.id);
-        const merged = [
-            ...apps,
-            ...newApps.filter((a) => !existingIds.includes(a.id)),
-        ];
-        setApps(merged);
-        SaveListShortcut(merged);
+        setApps((prevApps) => {
+            // Avoid duplicates
+            const existingIds = prevApps.map((a) => a.id);
+            return [
+                ...prevApps,
+                ...newApps.filter((a) => !existingIds.includes(a.id)),
+            ];
+        });
     };
 
     const onUninstall = (app) => {
-        const updated = apps.filter((a) => a.id !== app.id);
-        setApps(updated);
-        SaveListShortcut(updated);
+        setApps((prevApps) => prevApps.filter((a) => a.id !== app.id));
         setEditingApp(null);
     };
 
@@ -66,11 +75,9 @@ export default function WebGrid({
 
     const onEdit = (updatedApp) => {
         updatedApp.icon = ICON_URL + updatedApp.url;
-        var updatedApps = apps.map((a) =>
-            a.id === updatedApp.id ? updatedApp : a,
+        setApps((prevApps) =>
+            prevApps.map((a) => (a.id === updatedApp.id ? updatedApp : a)),
         );
-        setApps(updatedApps);
-        SaveListShortcut(updatedApps);
         setEditingApp(null);
     };
 
