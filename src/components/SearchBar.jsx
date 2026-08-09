@@ -33,7 +33,7 @@ const SearchBar = () => {
                     placeholder={`Search with ${
                         localStorage.getItem(SEARCH_ENGINE) || "Google"
                     }`}
-                    className="searchbar w-full h-12 pl-12 pr-4 py-2 rounded-full placeholder:italic shadow-lg text-xl flex-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    className="searchbar w-full h-10 sm:h-12 pl-10 sm:pl-12 pr-4 py-2 rounded-full placeholder:italic shadow-lg text-base sm:text-xl flex-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     style={inputStyle}
                     value={query}
                     autoComplete="off"
@@ -43,7 +43,7 @@ const SearchBar = () => {
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
+                        className="h-5 w-5 sm:h-6 sm:w-6"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"

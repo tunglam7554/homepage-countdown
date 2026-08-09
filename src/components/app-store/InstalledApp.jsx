@@ -47,7 +47,7 @@ const InstalledApp = ({
             onClose={() => setEditingApp(null)}
         />
     ) : (
-        <div className="w-full grid grid-cols-5 mt-2">
+        <div className="w-full grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 mt-2">
             {apps.filter(matches).map((item) => (
                 <div
                     className="flex items-center justify-center h-32"

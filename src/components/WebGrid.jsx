@@ -92,7 +92,7 @@ export default function WebGrid({
                     items={apps.map((a) => a.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="grid grid-cols-8 gap-4 py-2 mt-4">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-x-2 gap-y-4 sm:gap-4 py-2 mt-4 max-h-[42vh] sm:max-h-[46vh] md:max-h-[50vh] overflow-y-auto overflow-x-hidden pr-3 content-start">
                         {apps.map((app) => (
                             <WebItem
                                 key={app.id}

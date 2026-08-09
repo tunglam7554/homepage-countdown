@@ -12,21 +12,23 @@ const OdometerDigit = ({ value, isAnimating }) => {
     const digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
     return (
-        <div className="relative w-10 h-16 overflow-hidden">
+        <div className="relative w-6 h-10 sm:w-8 sm:h-12 md:w-10 md:h-16 overflow-hidden">
             <div
                 className={cn(
                     "absolute inset-0 transition-transform duration-300 ease-out",
                     isAnimating && "transform",
                 )}
                 style={{
-                    transform: `translateY(-${value * 64}px)`,
+                    // percentage-based so it stays aligned at every breakpoint,
+                    // instead of a hardcoded px offset tied to one fixed size
+                    transform: `translateY(-${value * 100}%)`,
                 }}
             >
                 {digits.concat(digits).map((digit, index) => (
                     <div
                         key={index}
                         className={cn(
-                            "flex items-center justify-center w-full h-16 text-7xl font-normal text-white",
+                            "flex items-center justify-center w-full h-10 sm:h-12 md:h-16 text-4xl sm:text-5xl md:text-7xl font-normal text-white",
                             value == digit && "text-shadow-lg",
                         )}
                     >
@@ -236,7 +238,7 @@ const OdometerClock = () => {
 
         if (countdown && countdown.isExpired) {
             return (
-                <div className="w-full flex flex-col items-center space-y-4 text-white text-4xl font-bold text-shadow-lg">
+                <div className="w-full flex flex-col items-center space-y-4 text-white text-2xl sm:text-3xl md:text-4xl font-bold text-shadow-lg text-center px-4">
                     {countdownMessage || "Time's Up!"}
                 </div>
             );
@@ -245,7 +247,7 @@ const OdometerClock = () => {
         if (countdown) {
             return (
                 <div className="w-full flex flex-col items-center space-y-4">
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center flex-wrap justify-center gap-2 sm:gap-4">
                         {/* Days */}
                         {parseInt(countdown.days) > 0 && (
                             <div className="flex flex-col">
@@ -265,7 +267,7 @@ const OdometerClock = () => {
                                         )}
                                     />
                                 </div>
-                                <div className="text-center text-white text-sm text-shadow-lg">
+                                <div className="text-center text-white text-xs sm:text-sm text-shadow-lg">
                                     Days
                                 </div>
                             </div>
@@ -289,7 +291,7 @@ const OdometerClock = () => {
                                     )}
                                 />
                             </div>
-                            <div className="text-center text-white text-sm text-shadow-lg">
+                            <div className="text-center text-white text-xs sm:text-sm text-shadow-lg">
                                 Hours
                             </div>
                         </div>
@@ -312,7 +314,7 @@ const OdometerClock = () => {
                                     )}
                                 />
                             </div>
-                            <div className="text-center text-white text-sm text-shadow-lg">
+                            <div className="text-center text-white text-xs sm:text-sm text-shadow-lg">
                                 Minutes
                             </div>
                         </div>
@@ -335,7 +337,7 @@ const OdometerClock = () => {
                                     )}
                                 />
                             </div>
-                            <div className="text-center text-white text-sm text-shadow-lg">
+                            <div className="text-center text-white text-xs sm:text-sm text-shadow-lg">
                                 Seconds
                             </div>
                         </div>
@@ -346,8 +348,8 @@ const OdometerClock = () => {
     }
 
     return (
-        <div className="w-full flex items-center">
-            <div className="flex items-center space-x-4">
+        <div className="w-full flex items-center justify-center sm:justify-start">
+            <div className="flex items-center flex-wrap justify-center sm:justify-start gap-2 sm:gap-4">
                 {/* Hours */}
                 <div className="flex flex-col">
                     <div className="flex mb-2 justify-center">
@@ -387,7 +389,7 @@ const OdometerClock = () => {
                             </>
                         )}
                     </div>
-                    <div className="text-left text-white text-sm text-shadow-lg">
+                    <div className="text-left text-white text-xs sm:text-sm text-shadow-lg">
                         Hours
                     </div>
                 </div>
@@ -409,7 +411,7 @@ const OdometerClock = () => {
                             )}
                         />
                     </div>
-                    <div className="text-left text-white text-sm text-shadow-lg">
+                    <div className="text-left text-white text-xs sm:text-sm text-shadow-lg">
                         Minutes
                     </div>
                 </div>
@@ -432,7 +434,7 @@ const OdometerClock = () => {
                             )}
                         />
                     </div>
-                    <div className="text-left text-white text-sm text-shadow-lg">
+                    <div className="text-left text-white text-xs sm:text-sm text-shadow-lg">
                         Seconds
                     </div>
                 </div>
@@ -440,14 +442,14 @@ const OdometerClock = () => {
                 {/* AM/PM */}
                 {is12HourFormat && (
                     <div className="flex flex-col items-center justify-center">
-                        <div className="text-white text-3xl font-normal text-shadow-lg">
+                        <div className="text-white text-xl sm:text-2xl md:text-3xl font-normal text-shadow-lg">
                             {current.ampm}
                         </div>
                     </div>
                 )}
 
                 {/* Date Display */}
-                <div className="flex flex-col justify-center text-white text-2xl text-shadow-lg">
+                <div className="flex flex-col justify-center text-white text-base sm:text-xl md:text-2xl text-shadow-lg">
                     <div className="text-left">
                         {current.day} {current.month}
                     </div>

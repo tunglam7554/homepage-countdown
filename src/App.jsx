@@ -38,7 +38,7 @@ function App() {
 
     return (
         <div
-            className="h-screen w-screen bg-center bg-cover bg-no-repeat"
+            className="min-h-screen w-screen bg-center bg-cover bg-no-repeat overflow-y-auto"
             style={{
                 backgroundImage: wallpaper
                     ? `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${wallpaper})`
@@ -46,7 +46,7 @@ function App() {
             }}
             onContextMenu={handleContextMenu}
         >
-            <div className="w-full max-w-4xl ml-auto mr-auto pt-[150px]">
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 sm:pt-28 md:pt-[150px] pb-10">
                 <CustomizeBar
                     isEditMode={isEditMode}
                     onOpenAppStore={setIsOpenAppStore}

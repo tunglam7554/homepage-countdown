@@ -8,11 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { customizeOptions } from "../../config/customize-option";
 
 const CustomizeBarPosition = {
-    margin: 16,
     padding: 4,
     position: "fixed",
     top: 0,
     right: 0,
+    maxWidth: "100vw",
 };
 
 const CustomizeBarStyle = {
@@ -59,7 +59,7 @@ export default function CustomizeBar({
         <AnimatePresence>
             {isEditMode ? (
                 <motion.div
-                    className="flex gap-2 text-sm"
+                    className="flex gap-2 text-xs sm:text-sm m-2 sm:m-4 overflow-x-auto max-w-[calc(100vw-16px)]"
                     style={CustomizeBarPosition}
                     key={isEditMode ? "editMode" : "normalMode"}
                     initial={{ opacity: 0, x: 10 }}
@@ -67,7 +67,7 @@ export default function CustomizeBar({
                     transition={{ duration: 0.5 }}
                 >
                     <div
-                        className="shadow-lg flex rounded-full"
+                        className="shadow-lg flex rounded-full shrink-0"
                         style={CustomizeBarStyle}
                     >
                         <button
@@ -81,14 +81,14 @@ export default function CustomizeBar({
                         </button>
                     </div>
                     <div
-                        className="shadow-lg rounded-full flex gap-2 text-white justify-space-between"
+                        className="shadow-lg rounded-full flex gap-2 text-white justify-space-between shrink-0"
                         style={{ ...CustomizeBarStyle }}
                     >
                         {customizeOptions.map((option, index) => {
                             return (
                                 <button
                                     key={index}
-                                    className={`${ButtonTabStyle} ${
+                                    className={`${ButtonTabStyle} whitespace-nowrap ${
                                         selectedTab == option.id &&
                                         " bg-white text-gray-950"
                                     }`}
@@ -99,7 +99,7 @@ export default function CustomizeBar({
                             );
                         })}
                         <button
-                            className={ButtonTabStyle}
+                            className={`${ButtonTabStyle} whitespace-nowrap`}
                             onClick={handleExitEditMode}
                         >
                             Done
@@ -108,7 +108,7 @@ export default function CustomizeBar({
                 </motion.div>
             ) : (
                 <motion.div
-                    className="flex gap-2 text-sm"
+                    className="flex gap-2 text-xs sm:text-sm m-2 sm:m-4"
                     style={CustomizeBarPosition}
                     key={isEditMode ? "editMode" : "normalMode"}
                     initial={{ opacity: 0, x: -10 }}

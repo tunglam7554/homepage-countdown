@@ -97,11 +97,11 @@ const EditApp = ({ isModal, app, onEdit, onUninstall, onClose }) => {
                 )}
             </div>
             <div
-                className={`w-full flex flex-col items-center gap-4 ${isModal ? "p-6" : "px-40 pt-32"}`}
+                className={`w-full flex flex-col items-center gap-4 ${isModal ? "p-4 sm:p-6" : "px-4 sm:px-10 md:px-40 pt-8 sm:pt-16 md:pt-32"}`}
             >
-                <div className="flex flex-row gap-4 w-full">
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
                     <div
-                        className="flex w-40 border-2 rounded-2xl justify-center items-center"
+                        className="flex w-full h-24 sm:w-40 sm:h-40 border-2 rounded-2xl justify-center items-center shrink-0"
                         style={iconStyle}
                     >
                         <img
