@@ -1,12 +1,22 @@
-# React + Vite
+# Homepage Countdown
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The website can run on its own, and the Chrome extension opens the deployed site
+inside an extension-owned New Tab page. When opened by the extension, app
+`localStorage` is mirrored to `chrome.storage.local`; existing website data is
+imported the first time the extension is used.
 
-Currently, two official plugins are available:
+## Deploy the website
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Run `npm run build` and deploy the generated `dist` folder as the website.
 
-## Expanding the ESLint configuration
+## Install the Chrome extension
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The extension package is the separate `extension` folder, not `dist`. In
+Chrome, open `chrome://extensions`, enable Developer mode, choose **Load
+unpacked**, and select `extension`.
+
+The extension iframe currently points to
+`https://tunglam7554.github.io/homepage-countdown/` in `extension/newtab.js`.
+If the site is deployed at another address, update that URL and the matching
+`frame-src` origin in `extension/manifest.json`. Deploy website changes and
+reload the extension after changing extension files.
